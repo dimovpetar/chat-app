@@ -12,5 +12,5 @@ MEAN stack with Angular 5 Chat App
   use socket.io to emit messages(text, video)
 
 **Extend the mail goal:**
-  make live chat conversations
-  make the app working on mobile
+* live chat conversations
+* make mobile app as well
