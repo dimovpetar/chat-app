@@ -7,9 +7,9 @@ MEAN stack with Angular 5 Chat App
 * MongoDB to store data
 
 **Main goal:**
-  user authentication
-  session store
-  use socket.io to emit messages(text, video)
+* user authentication
+* session store
+* use socket.io to emit messages(text, video)
 
 **Extend the mail goal:**
 * live chat conversations
