@@ -1,18 +1,22 @@
 # mean-chat-app
-MEAN stack with Angular 5 Chat App
+MEAN stack chat application
 
-**As the title suggests the project is using:**
-* Angular for the client side
+**The application is using:**
+* Angular 5
 * Node.js server using Express, written in Typescript
-* MongoDB to store data
+* MongoDB with Mongoose to manipulate data
+* Socket.io
+* JWT
 
-**Main goal:**
+**Main functionalities:**
 * user authentication
-* session store
-* real time communication with text, voice and video messages (using socket.io)
-* group chats and private chats
-* save chat history
+* friend list
+* private chat with every friend on the friend list
+* group chats
+* real time text messages
+* chat history
 
-**Extend the mail goal:**
+**Possible functionalities:**
+* voice and video messages
 * live calls
-* make mobile app as well
+* mobile app
