@@ -14,9 +14,9 @@ MEAN stack chat application
 * private chat with every friend on the friend list
 * group chats
 * real time text messages
+* voice and video messages
 * chat history
 
 **Possible functionalities:**
-* voice and video messages
 * live calls
 * mobile app
