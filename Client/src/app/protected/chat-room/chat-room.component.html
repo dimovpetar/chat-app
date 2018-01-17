@@ -1,0 +1,17 @@
+<div *ngIf="chat" class="chatRoom">
+
+  <p> Chat title {{chat.title}} </p>
+  <ul id="messages">
+    <li *ngFor="let msg of messages" >
+      {{msg.message}}
+    </li>
+  </ul>
+
+  <div class="messageInput">
+    <input id="m" (keyup.enter)="sendMessage()" [value]="message" (input)="message = $event.target.value"/>
+    <button (click)="sendMessage()">Send</button>
+  </div>
+
+</div>
+  
+  

@@ -1,0 +1,7 @@
+<div class="chatList">
+  <ul >
+    <li *ngFor="let chat of chatList" (click)="changeChatRoom(chat._id, chat.title)" >
+      {{chat.title}}
+    </li>
+  </ul>
+</div>

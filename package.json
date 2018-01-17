@@ -17,5 +17,6 @@
   "bugs": {
     "url": "https://github.com/dimovpetar/mean-chat-app/issues"
   },
-  "homepage": "https://github.com/dimovpetar/mean-chat-app#readme"
+  "homepage": "https://github.com/dimovpetar/mean-chat-app#readme",
+  "dependencies": {}
 }

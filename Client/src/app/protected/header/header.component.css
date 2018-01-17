@@ -1,0 +1,23 @@
+.pageHeader {
+    width: 100vw;
+    height: 5vh;
+    background-color: darkgoldenrod;
+    text-align: right;
+}
+
+/* .searchFriends {
+    margin-right: 40%;
+} */
+
+button, .searchFriends {
+    display: inline-block;
+    background-color: #55cc66;
+    margin-right: 50px;
+    padding: 5px;
+}
+/* .pageHeader button {
+    position: fixed;
+    right: 5px;
+
+} */
+
