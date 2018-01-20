@@ -11,8 +11,8 @@ import { AlertService } from '../../shared/alert.service';
 })
 
 export class RegisterComponent implements OnInit {
-  private loading: boolean;
-  private user: any = { };
+  public loading: boolean;
+  public user: any = { };
 
   constructor(
     private router: Router,

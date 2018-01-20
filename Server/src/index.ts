@@ -1,11 +1,11 @@
 import * as http from 'http';
 import App from './App';
-import Socket from './socket';
+import ChatSocket from './socket';
 
 const port = normalizePort(process.env.PORT || 3000);
 App.set('port', port);
 const server = http.createServer(App);
-Socket.setServer(server);
+ChatSocket.setServer(server);
 
 
 server.listen(port);

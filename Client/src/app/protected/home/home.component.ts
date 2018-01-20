@@ -8,8 +8,8 @@ import { Chat } from '../../interfaces/chat';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-  private selected;
-  private chat: Chat;
+  public selected;
+  private room: Chat;
 
   constructor() {
     this.selected = 'chatRoom';
@@ -22,9 +22,9 @@ export class HomeComponent implements OnInit {
     this.selected = view;
   }
 
-  changeChatRoom(chat) {
+  changeChatRoom(room) {
     this.selected = 'chatRoom';
-    this.chat = chat;
+    this.room = room;
   }
 
 }

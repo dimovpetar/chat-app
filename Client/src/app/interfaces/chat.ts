@@ -4,7 +4,7 @@ export interface Chat {
 }
 
 export interface ChatMessage {
-    chatId: number;
+    roomId: number;
     message: string;
     sender: string;
 }

@@ -11,3 +11,9 @@ export interface Chat {
     title: string;
     _id: number;
 }
+
+export interface IChatMessage {
+    roomId: string;
+    message: string;
+    sender: string;
+}

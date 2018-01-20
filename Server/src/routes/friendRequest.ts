@@ -4,10 +4,9 @@ import * as mongoose from 'mongoose';
 import authenticate from '../middlewares/authentication';
 import { ChatRoom, IChatRoomModel } from '../models/chatroom';
 import { User } from '../models/user';
-import { createChat, newChatRoom} from '../helpers/chatroom'
+import { createChat } from '../helpers/chatroom'
 
-import Socket1 from '../socket';
-
+import Socket from '../socket';
 
 class FriendRequestRouter {
     public router: Router;
@@ -38,22 +37,22 @@ class FriendRequestRouter {
             username:  req.body.senderUsername
         }
         
-        newChatRoom({_id:5, title:'e'});
         const decision = req.body.decision;
       
         User.findOneAndUpdate({_id: receiver.id}, { $pull : {'friendRequests':  sender.id}})
         .exec()
         .then( user => {
             if (decision === 'accept') {
-                const chatId = createChat([receiver, sender], [])
+                createChat([receiver, sender], [])
                 .then( chat => {
                     user.update({ $push: {'friendList': sender.id}}).exec();
                     user.update({ $push: {'chatRooms': chat._id}}).exec();
                     User.update({_id: sender.id}, { $push: {'friendList': receiver.id}}).exec();
                     User.update({_id: sender.id}, { $push: {'chatRooms': chat._id}}).exec();
-                })           
+                    Socket.newRoomTo(receiver.username, {_id: chat._id, title: chat.title});
+                    Socket.newRoomTo(sender.username, {_id: chat._id, title: chat.title});          
+                })       
             } 
-
         })
         .then( () => res.status(200).json({status: 'handled'}))
         .catch( err => {
@@ -68,19 +67,19 @@ class FriendRequestRouter {
       
         const conditions = {
             username: receiver,
-            'friendRequests': { $ne: senderId}
+            'friendRequests': { $ne: senderId},
+            'friendList' : { $ne: senderId }
         }
         User.update(conditions, {$push: {'friendRequests': senderId}}, (err, user) => {
             if (err) {
              console.log(err);
              res.status(404);
             } else {
-                console.log(user);
+                Socket.newFriendRequestTo(receiver);
                 res.status(200).json({status: 'Friend request sent'});
             }
         });
     }
-
 
     init() {
         this.router.get('/', authenticate, this.list);

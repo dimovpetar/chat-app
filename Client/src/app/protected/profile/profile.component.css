@@ -1,8 +1,7 @@
 .userProfile {
     width: 12vw;
-    height: 15vh; 
-    margin-top: 10vh;   
-    background-color: brown;
+    height: 25vh; 
     position: fixed;
-
+    border-right: solid;
+    
 }

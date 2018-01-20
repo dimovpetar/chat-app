@@ -5,29 +5,28 @@ import { SocketService } from './socket.service';
 import { Subject } from 'rxjs/Subject';
 import { map } from 'rxjs/operators/map';
 import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 
 @Injectable()
 export class ChatService {
   public messages$: Subject<ChatMessage>;
   public chat: ChatHash = {};
   public chatList$: Subject<Chat[]> = new Subject<Chat[]>();
-  public newChat$: any;
+  public newChat$: Subscription;
 
   constructor(private http: HttpClient, private socketService: SocketService) {
     this.messages$ = <Subject<ChatMessage>>socketService.messages()
     .map((message: ChatMessage) => {
-      this.chat[message.chatId] ?
-          this.chat[message.chatId].push(message) : this.chat[message.chatId] = [message];
+      this.chat[message.roomId] ?
+          this.chat[message.roomId].push(message) : this.chat[message.roomId] = [message];
       return message;
     });
 
     this.newChat$ = socketService.chats()
     .subscribe((chat: Chat) => {
-        this.addChats([chat]);
+        this.joinRooms([chat]);
         return chat;
     });
-
-    this.loadAll();
   }
 
   sendMsg(message: ChatMessage) {
@@ -37,12 +36,13 @@ export class ChatService {
   loadAll() {
     this.http.get<Chat[]>('http://localhost:3000/chatroom')
     .subscribe(chats => {
-      this.addChats(chats);
+      this.joinRooms(chats);
     });
   }
 
-  addChats(chats: Chat[]) {
+  joinRooms(chats: Chat[]) {
     this.chatList$.next(chats);
+    chats.forEach( el => this.socketService.joinRoom(el._id));
   }
 
   getLastMessages(chatId: number, count: number) {

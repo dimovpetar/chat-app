@@ -22,10 +22,6 @@ const routes: Routes = [
     path: 'register',
     component: RegisterComponent
   },
-  /*{
-    path: '',
-    loadChildren: 'app/public/public.module#PublicModule'
-  },*/
   {
     path: '**',
     redirectTo: ''

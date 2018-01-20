@@ -10,8 +10,8 @@ import { AlertService } from '../../shared/alert.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  private user: User;
-  private loading;
+  public user: User;
+  public loading;
 
   constructor(
     private router: Router,
@@ -28,7 +28,7 @@ export class LoginComponent implements OnInit {
     this.loading = true;
     this.authService.login(this.user)
     .subscribe( data => {
-          this.router.navigate(['/']);
+      this.router.navigate(['/']);
     }, e => {
           this.alertService.error(e.error);
           this.loading = false;

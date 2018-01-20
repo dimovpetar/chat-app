@@ -2,6 +2,7 @@ import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { Router } from '@angular/router/';
 import { AuthService } from '../../core/auth.service';
 import { UserService } from '../user.service';
+import { SocketService } from '../socket.service';
 
 @Component({
   selector: 'app-header',
@@ -10,20 +11,22 @@ import { UserService } from '../user.service';
 })
 export class HeaderComponent implements OnInit {
   @Output() viewFriendRequests: EventEmitter<string> = new EventEmitter<string>();
-  private friend = '';
+  public friend = '';
   private sendStatus = '';
 
   constructor(
     private authService: AuthService,
     private router: Router,
-    private userService: UserService) { }
+    private userService: UserService,
+    private socketService: SocketService) { }
 
   ngOnInit() {
   }
 
   logout() {
     this.authService.logout();
-    this.router.navigate(['/login']);
+    this.socketService.disconnect();
+    window.location.reload();
   }
 
   listRequests() {
@@ -39,6 +42,5 @@ export class HeaderComponent implements OnInit {
       console.log(e);
     });
     this.friend = '';
-
   }
 }

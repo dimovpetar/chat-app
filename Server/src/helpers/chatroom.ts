@@ -18,16 +18,9 @@ export const createChat = function(admins: any[], participants: IUserModel[]) {
     })
 
     return chatRoom.save(); 
-    /*.then( saved => {
-        return saved._id;
-    })
-    .catch( err => {
-        console.error(err);
-    })*/
 }
 
 export const getUserChats = (username: string): Promise<any[]> => {
-
     return User.findOne({username: username})
     .then(user => {
         return user.chatRooms;
@@ -36,11 +29,4 @@ export const getUserChats = (username: string): Promise<any[]> => {
         console.error(err)
         return [];
     });
-}
-
-export const newChatRoom = (chat: Chat) => {
-    Socket.gosho();    
-    // Socket.io.emi
-    //import map from socket
-    // map[id]emit(newchat)
 }

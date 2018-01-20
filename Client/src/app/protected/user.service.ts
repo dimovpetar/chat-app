@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { FriendRequest } from '../interfaces/friend-request';
+import { SocketService } from './socket.service';
 
 @Injectable()
 export class UserService {
-
-  constructor(private http: HttpClient) { }
+ 
+  constructor(private http: HttpClient) {  }
 
   listFriendRequests() {
     return this.http.get<FriendRequest[]>('http://localhost:3000/user');
@@ -16,22 +17,20 @@ export class UserService {
     return this.http.post(`http://localhost:3000/user/${username}`, {});
   }
 
-  acceptFriendRequest(id: number, username: string) {
+  acceptFriendRequest(senderId: number, username: string) {
     const reqToHandle = {
-      senderId: id,
+      senderId: senderId,
       senderUsername: username,
       decision: 'accept'
     };
-
     return this.http.post('http://localhost:3000/user', reqToHandle);
   }
 
-  declineFriendRequest(id: number) {
+  declineFriendRequest(senderId: number) {
     const reqToHandle = {
-      senderId: id,
+      senderId: senderId,
       decision: 'decline'
     };
-
     return this.http.post('http://localhost:3000/user', reqToHandle);
   }
 }

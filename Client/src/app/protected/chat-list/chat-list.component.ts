@@ -19,6 +19,7 @@ export class ChatListComponent implements OnInit, OnDestroy {
     private socketService: SocketService) { }
 
   ngOnInit() {
+    this.chatService.loadAll();
     this.subscribtion = this.chatService.chatList$
     .subscribe((chat: Chat[]) => {
       chat.forEach( el => this.chatList.push(el));

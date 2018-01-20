@@ -3,6 +3,6 @@
 <app-chat-list (selectedChat)="changeChatRoom($event)"></app-chat-list>
 
 <div [ngSwitch]="selected" class="mainPanel">
-    <app-chat-room *ngSwitchCase="'chatRoom'" [chat]="chat"></app-chat-room>
+    <app-chat-room *ngSwitchCase="'chatRoom'" [room]="room"></app-chat-room>
     <app-friend-requests *ngSwitchCase="'friendRequests'" ></app-friend-requests>
 </div>
