@@ -1,18 +1,13 @@
-import { IUserModel } from '../models/user';
+import { IUser} from './user';
 
 export interface IChatRoom {
-    admins: IUserModel[],
-    participants: IUserModel[],
-    title: string,
-    messages: string[]
-}
-
-export interface Chat {
+    admins: IUser[];
+    participants: IUser[];
     title: string;
-    _id: number;
+    messages?: string[];
 }
 
-export interface IChatMessage {
+export interface ChatMessage {
     roomId: string;
     message: string;
     sender: string;

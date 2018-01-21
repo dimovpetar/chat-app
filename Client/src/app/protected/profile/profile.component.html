@@ -1,3 +1,5 @@
 <div class="userProfile">
-    Hello {{user.username}}
+    <img class="profilePicture" *ngIf="!user.profilePicture" 
+        src="http://voice4thought.org/wp-content/uploads/2016/08/default1.jpg"/>
+    <span>{{user.username}}</span>
 </div>

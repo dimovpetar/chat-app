@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnDestroy, OnChanges } from '@angular/core';
-import { Chat, ChatMessage } from '../../interfaces/chat';
+import { ChatRoom, ChatMessage } from '../../interfaces/chat';
 import { ChatService } from '../chat.service';
 import { Message } from '@angular/compiler/src/i18n/i18n_ast';
 import { Subscription } from 'rxjs/Subscription';
@@ -10,9 +10,10 @@ import { Subscription } from 'rxjs/Subscription';
   styleUrls: ['./chat-room.component.css']
 })
 export class ChatRoomComponent implements OnInit, OnDestroy, OnChanges {
-  @Input() room: Chat;
-  private message = '';
+  @Input() room: ChatRoom;
+  public message = '';
   public messages: ChatMessage[] = [];
+  public user = localStorage.getItem('username');
   private subscription: Subscription;
 
   constructor(private chatService: ChatService) {  }
@@ -30,7 +31,7 @@ export class ChatRoomComponent implements OnInit, OnDestroy, OnChanges {
 
   sendMessage() {
     const chatMessage: ChatMessage = {
-      roomId: this.room._id,
+      roomId: this.room.id,
       sender: localStorage.getItem('username'),
       message: this.message
     };
@@ -40,7 +41,7 @@ export class ChatRoomComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnChanges() {
     if (this.room) {
-      this.messages = this.chatService.getLastMessages(this.room._id, 10);
+      this.messages = this.chatService.getLastMessages(this.room.id, 10);
     }
   }
 

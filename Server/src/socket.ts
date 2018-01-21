@@ -1,7 +1,7 @@
 import * as socketIo from 'socket.io'; 
 import { Server } from 'http';
 import { getUserChats } from './helpers/chatroom';
-import { IChatMessage, Chat } from './interfaces/chatroom';
+import { ChatMessage } from './interfaces/chatroom';
 
 const  sequenceNumberByClient = new Map();
 
@@ -22,7 +22,7 @@ class Socket {
 
         socket.on('init', username => {
             sequenceNumberByClient.set(username, socket);
-            this.newRoomTo(username, {_id:5, title: 'test'})
+            this.newRoomTo(username, {id: 5, title: 'global'})
         })
 
         socket.on('subscribe', function(room) { 
@@ -34,7 +34,7 @@ class Socket {
             socket.leave(room); 
         })
    
-        socket.on('message', (message: IChatMessage) => {
+        socket.on('message', (message: ChatMessage) => {
             this.io.sockets.in(message.roomId).emit('message', message);   
         });
 
@@ -51,7 +51,7 @@ class Socket {
        });
     }
 
-    newRoomTo(username: string, room: Chat) {
+    newRoomTo(username: string, room: any) {
         const s = sequenceNumberByClient.get(username);
         if (s) {
            s.emit('newRoom', room);

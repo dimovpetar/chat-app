@@ -5,6 +5,7 @@ import authenticate from '../middlewares/authentication';
 import { ChatRoom, IChatRoomModel } from '../models/chatroom';
 import { User } from '../models/user';
 import { createChat} from '../helpers/chatroom'
+import { IChatRoom } from '../interfaces/chatroom';
 
 class ChatRoomRouter {
     public router: Router;
@@ -37,16 +38,25 @@ class ChatRoomRouter {
         .catch( err => console.error(err));
     }
 
+    // populate: {
+       // path: 'admins',
+     //   model: User
+   // }} )
+    //'chatRooms', 'title'
     private list(req: Request, res: Response, next: NextFunction) {
-        User.findOne({_id: req.body.id}).populate('chatRooms', 'title')
+        User.findOne({_id: req.body.id}).populate('chatRooms', 'title') 
         .then(user => {
-            res.json(user.chatRooms);
+            const rooms:any[] = [];
+            user.chatRooms.forEach( el => {
+                rooms.push({title: el.title, id: el._id})
+            })         
+            res.json(rooms);
         })
         .catch( err => console.error(err));
     }
 
     init(): void {
-        this.router.post('/', authenticate, this.create); //authorize
+        this.router.post('/', authenticate, this.create);
         this.router.get('/', authenticate, this.list)
     }
 }

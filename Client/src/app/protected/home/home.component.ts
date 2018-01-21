@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgSwitch } from '@angular/common';
-import { Chat } from '../../interfaces/chat';
+import { ChatRoom } from '../../interfaces/chat';
 
 @Component({
   selector: 'app-home',
@@ -9,7 +9,7 @@ import { Chat } from '../../interfaces/chat';
 })
 export class HomeComponent implements OnInit {
   public selected;
-  private room: Chat;
+  public room: ChatRoom;
 
   constructor() {
     this.selected = 'chatRoom';

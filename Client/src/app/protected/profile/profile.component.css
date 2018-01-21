@@ -1,7 +1,11 @@
 .userProfile {
-    width: 12vw;
-    height: 25vh; 
-    position: fixed;
-    border-right: solid;
-    
+    width: 60%;
+    height: 100%;
+    display: flex; 
+}
+
+.profilePicture {
+    width: 60%;
+    height: 80%;
+    margin: 10%;
 }

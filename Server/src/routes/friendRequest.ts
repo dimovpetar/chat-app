@@ -49,8 +49,8 @@ class FriendRequestRouter {
                     user.update({ $push: {'chatRooms': chat._id}}).exec();
                     User.update({_id: sender.id}, { $push: {'friendList': receiver.id}}).exec();
                     User.update({_id: sender.id}, { $push: {'chatRooms': chat._id}}).exec();
-                    Socket.newRoomTo(receiver.username, {_id: chat._id, title: chat.title});
-                    Socket.newRoomTo(sender.username, {_id: chat._id, title: chat.title});          
+                    Socket.newRoomTo(receiver.username, {id: chat._id, title: chat.title});
+                    Socket.newRoomTo(sender.username, {id: chat._id, title: chat.title});          
                 })       
             } 
         })

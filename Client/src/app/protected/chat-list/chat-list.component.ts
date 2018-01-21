@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { ChatService } from '../chat.service';
-import { Chat } from '../../interfaces/chat';
+import { ChatRoom } from '../../interfaces/chat';
 import { SocketService } from '../socket.service';
 
 
@@ -10,8 +10,8 @@ import { SocketService } from '../socket.service';
   styleUrls: ['./chat-list.component.css']
 })
 export class ChatListComponent implements OnInit, OnDestroy {
-  @Output() selectedChat: EventEmitter<Chat> = new EventEmitter<Chat> ();
-  public chatList: Chat[] = [];
+  @Output() selectedChat: EventEmitter<ChatRoom> = new EventEmitter<ChatRoom> ();
+  public chatList: ChatRoom[] = [];
   private subscribtion;
 
   constructor(
@@ -21,7 +21,7 @@ export class ChatListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.chatService.loadAll();
     this.subscribtion = this.chatService.chatList$
-    .subscribe((chat: Chat[]) => {
+    .subscribe((chat: ChatRoom[]) => {
       chat.forEach( el => this.chatList.push(el));
     });
   }
@@ -30,8 +30,8 @@ export class ChatListComponent implements OnInit, OnDestroy {
     this.subscribtion.unsubscribe();
   }
 
-  changeChatRoom(id: number, title: string) {
-    this.selectedChat.emit({_id: id, title: title});
+  changeChatRoom(chatRoom: ChatRoom) {
+    this.selectedChat.emit(chatRoom);
   }
 
 }

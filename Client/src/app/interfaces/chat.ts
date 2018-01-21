@@ -1,6 +1,16 @@
-export interface Chat {
+/*export interface Chat {
     title: string;
     _id: number;
+}*/
+
+import { User } from './user';
+
+export interface ChatRoom {
+    id: number;
+    admins: User[];
+    participants: User[];
+    title: string;
+    messages?: string[];
 }
 
 export interface ChatMessage {
@@ -12,4 +22,3 @@ export interface ChatMessage {
 export interface ChatHash {
     [key: string]: ChatMessage[];
 }
-

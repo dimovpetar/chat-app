@@ -1,6 +1,5 @@
 import { ChatRoom } from '../models/chatroom';
 import { IUserModel, User } from '../models/user';
-import { Chat } from '../interfaces/chatroom';
 
 import  Socket from '../socket';
 

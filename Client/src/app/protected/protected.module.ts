@@ -17,6 +17,9 @@ import { SocketService } from './socket.service';
   imports: [
     CommonModule,
   ],
+  exports: [
+    HomeComponent
+  ],
   providers: [
     ChatService,
     UserService,
