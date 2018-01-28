@@ -1,7 +1,7 @@
 <div *ngIf="room" class="chatRoom">
 
   <div class="title"> 
-    <span>Chat title {{room.title}}</span> 
+    <span>{{room.title}}</span> 
   </div>
 
   <div class="chat">
@@ -33,16 +33,19 @@
     <div class="info" >
      
       <ul class="roomSettings">
-        <li><span>change title</span></li>
-        <li><button (click)="openInviteUserDialog()">add</button></li>
-        <li><button id="btn1" (click)="leaveRoom()">leave</button></li>
+        <li><span (click)="openTitleDialog()">Change title</span></li>
+        <li><span (click)="openInviteUserDialog()">Invite users</span></li>
+        <li><span (click)="leaveRoom()">Leave room</span></li>
       </ul>
 
       <ul class="userList">
         <li *ngFor="let member of room.members">
-          {{member.username}}
-        </li>
+          <img class="memberPicture" *ngIf="!member.profilePicture" 
+          src="http://voice4thought.org/wp-content/uploads/2016/08/default1.jpg"/>
+          <span>{{member.username}}</span>
+        </li>   
       </ul>
+
     </div>
 
   </div>

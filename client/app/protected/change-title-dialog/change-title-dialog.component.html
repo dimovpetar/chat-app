@@ -1,0 +1,9 @@
+<h1 mat-dialog-title>Invite user</h1>
+<mat-dialog-content>
+  <input [(ngModel)]="title" (keyup.enter)="changeTitle()" placeholder="title">
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="change()">Change</button>
+  <button mat-button (click)="cancel()">Cancel</button>
+</mat-dialog-actions>
+

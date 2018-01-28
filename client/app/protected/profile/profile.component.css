@@ -4,25 +4,41 @@
     display: flex; 
 }
 
-.profilePicture {
-    height: 80%;
-    border-radius: 50%;
-    width: 15%;
+.settings {
+   width: 20%;
+   height: 100%;
 }
 
-.asd {
-    width: 30%;
-    height: 4px;
-    background-color: white;
+
+.name {
+    width: 50%;
+    height: 100%;
+}
+
+.profilePicture {
+   width: 30%;
+   height: 100%;
+}
+
+.profilePicture img {
+    border-radius: 50%;
+    width: 70%;
+    height: 80%;
     margin: 5%;
 }
 
-.settings {
-    width: 40%;
-    height: 100%;
+.hamburger {
+    margin-top: 30%;
+    margin-left: 20%;
+    cursor: pointer;
 }
 
-.name {
-    width: 40%;
-    height: 100%;
+.hamburger div {
+    display: block;
+    width: 33px;
+    height: 4px;
+    margin-bottom: 5px;
+    position: relative;
+    background-color: white;
+    border-radius: 3px;
 }

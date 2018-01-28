@@ -14,6 +14,8 @@ import { SocketService } from './socket.service';
 import { InviteUserDialogComponent } from './invite-user-dialog/invite-user-dialog.component';
 
 import { FormsModule } from '@angular/forms';
+import { ChangeTitleDialogComponent } from './change-title-dialog/change-title-dialog.component';
+import { SettingsComponent } from './settings/settings.component';
 
 @NgModule({
   imports: [
@@ -36,9 +38,12 @@ import { FormsModule } from '@angular/forms';
     ChatListComponent,
     ChatRoomComponent,
     InviteUserDialogComponent,
+    ChangeTitleDialogComponent,
+    SettingsComponent,
   ],
   entryComponents: [
-    InviteUserDialogComponent
+    InviteUserDialogComponent,
+    ChangeTitleDialogComponent
   ]
 })
 export class ProtectedModule { }

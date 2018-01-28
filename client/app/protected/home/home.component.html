@@ -1,16 +1,15 @@
 <div class="home">
     <div class="leftPanel">
         <div class="userPanel">
-            <app-profile></app-profile>
-            <!-- <app-header></app-header> -->
+            <app-profile (settings)="showSettings()"></app-profile>
         </div>
        <div class="chatList">
-            <app-chat-list (selectedChat)="changeChatRoom($event)"
-                        (createNewChatRoom)="createNewChatRoom()"></app-chat-list>            
+            <app-chat-list (selectedChat)="changeChatRoom($event)"> </app-chat-list>            
        </div>
     </div>
     
     <div [ngSwitch]="selected" class="mainPanel">
         <app-chat-room *ngSwitchCase="'chatRoom'" [room]="room"></app-chat-room>    
+        <app-settings *ngSwitchCase="'settings'"></app-settings>
     </div>
 </div>

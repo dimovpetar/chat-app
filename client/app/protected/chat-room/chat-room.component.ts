@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { MatDialogRef, MatDialog } from '@angular/material';
 
 import { InviteUserDialogComponent } from '../invite-user-dialog/invite-user-dialog.component';
+import { ChangeTitleDialogComponent } from '../change-title-dialog/change-title-dialog.component';
 
 
 @Component({
@@ -21,6 +22,7 @@ export class ChatRoomComponent implements OnInit, OnDestroy, OnChanges {
   public username = localStorage.getItem('username');
   private subscription: Subscription;
   private inviteUserDialogRef: MatDialogRef<InviteUserDialogComponent>;
+  private changeTitleDialogRef: MatDialogRef<ChangeTitleDialogComponent>;
 
   constructor(private chatService: ChatService, private dialog: MatDialog) {  }
 
@@ -74,13 +76,33 @@ export class ChatRoomComponent implements OnInit, OnDestroy, OnChanges {
 
     const sub = this.inviteUserDialogRef.componentInstance.invite
     .subscribe( (username: string) => {
-      console.log('invite', username);
       this.chatService.updateChatRoom({
         update: Update.AddUser,
         user: {
           username: username
         },
         roomId: this.room.id
+      });
+    });
+
+    this.inviteUserDialogRef.afterClosed()
+    .subscribe( () => {
+      sub.unsubscribe();
+    });
+  }
+
+  openTitleDialog() {
+    this.changeTitleDialogRef = this.dialog.open(ChangeTitleDialogComponent, {
+      height: '40%',
+      width: '40%'
+    });
+
+    const sub = this.changeTitleDialogRef.componentInstance.changeTitle
+    .subscribe( (title: string) => {
+      this.chatService.updateChatRoom({
+        update: Update.Title,
+        roomId: this.room.id,
+        title: title
       });
     });
 

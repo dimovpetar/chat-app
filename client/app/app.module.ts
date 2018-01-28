@@ -9,11 +9,13 @@ import { ProtectedModule } from './protected/protected.module';
 import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
 import { JwtInterceptor } from './core/jwt.interceptor';
+import { ChangeTitleDialogComponent } from './change-title-dialog/change-title-dialog.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
+    ChangeTitleDialogComponent,
   ],
   imports: [
     BrowserModule,

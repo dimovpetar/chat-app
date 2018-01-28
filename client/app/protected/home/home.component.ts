@@ -31,4 +31,8 @@ export class HomeComponent implements OnInit {
     this.selected = 'createChat';
   }
 
+  showSettings() {
+    this.selected = 'settings';
+  }
+
 }
