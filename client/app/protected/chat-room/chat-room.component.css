@@ -61,11 +61,11 @@ ul {
     height: 88%;
 }
 
-li { 
+.messageList ul li { 
     margin: 5px;
     overflow-wrap: break-word;
     padding: 10px;
-    max-width: 90%;
+    max-width: 100%;
     clear: both;
 }
 

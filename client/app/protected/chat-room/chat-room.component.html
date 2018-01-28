@@ -24,19 +24,17 @@
         </ul>
       
         <div class="messageInput">
-          <input id="m" (keyup.enter)="sendMessage()" [value]="message" (input)="message = $event.target.value" />
+          <input (keyup.enter)="sendMessage()" [(ngModel)]="message" />
           <button (click)="sendMessage()">Send</button>
         </div>
 
     </div> 
 
-    <div class="info" >  <!--[@slideInOut]="menuState" -->
+    <div class="info" >
      
       <ul class="roomSettings">
         <li><span>change title</span></li>
-        <li> <input  id="inpt1" type="text" [value]="inviteUser" 
-          (input)="inviteUser = $event.target.value" (keyup.enter)="addUser()"
-          placeholder="invite"></li>
+        <li><button (click)="openInviteUserDialog()">add</button></li>
         <li><button id="btn1" (click)="leaveRoom()">leave</button></li>
       </ul>
 

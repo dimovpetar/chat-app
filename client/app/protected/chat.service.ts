@@ -70,9 +70,9 @@ export class ChatService {
 
   /* watches for updates and makes them */
   chatRoomUpdate(update: IChatUpdate) {
-    if (this.chat[update.roomId]) {
+   /* if (this.chat[update.roomId]) {
       this.chat[update.roomId].length = 0;
-    }
+    }*/
     this.update$.next(update);
   }
 

@@ -3,6 +3,9 @@ import { IChatRoom, IChatMessage, Update } from '../../../../shared/interfaces/c
 import { ChatService } from '../chat.service';
 import { Message } from '@angular/compiler/src/i18n/i18n_ast';
 import { Subscription } from 'rxjs/Subscription';
+import { MatDialogRef, MatDialog } from '@angular/material';
+
+import { InviteUserDialogComponent } from '../invite-user-dialog/invite-user-dialog.component';
 
 
 @Component({
@@ -17,9 +20,9 @@ export class ChatRoomComponent implements OnInit, OnDestroy, OnChanges {
   public messages: IChatMessage[] = [];
   public username = localStorage.getItem('username');
   private subscription: Subscription;
-  public inviteUser = '';
+  private inviteUserDialogRef: MatDialogRef<InviteUserDialogComponent>;
 
-  constructor(private chatService: ChatService) {  }
+  constructor(private chatService: ChatService, private dialog: MatDialog) {  }
 
   ngOnInit() {
     this.subscription = this.chatService.messages$
@@ -62,15 +65,29 @@ export class ChatRoomComponent implements OnInit, OnDestroy, OnChanges {
     });
   }
 
-  addUser() {
-    this.chatService.updateChatRoom({
-      update: Update.AddUser,
-      roomId: this.room.id,
-      user: {
-        username: this.inviteUser
-      }
+
+  openInviteUserDialog() {
+    this.inviteUserDialogRef = this.dialog.open(InviteUserDialogComponent, {
+      height: '40%',
+      width: '40%'
     });
-    this.inviteUser = '';
+
+    const sub = this.inviteUserDialogRef.componentInstance.invite
+    .subscribe( (username: string) => {
+      console.log('invite', username);
+      this.chatService.updateChatRoom({
+        update: Update.AddUser,
+        user: {
+          username: username
+        },
+        roomId: this.room.id
+      });
+    });
+
+    this.inviteUserDialogRef.afterClosed()
+    .subscribe( () => {
+      sub.unsubscribe();
+    });
   }
 
 }

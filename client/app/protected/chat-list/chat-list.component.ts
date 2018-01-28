@@ -12,7 +12,6 @@ import { SocketService } from '../socket.service';
 export class ChatListComponent implements OnInit, OnDestroy {
   @Output() selectedChat: EventEmitter<IChatRoom> = new EventEmitter<IChatRoom> ();
   public chatList: IChatRoom[] = [];
-  private subscribtion;
 
   constructor(
     private chatService: ChatService,
@@ -20,35 +19,45 @@ export class ChatListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.chatService.loadAll();
-    this.subscribtion = this.chatService.chatList$
+
+    this.chatService.chatList$
     .subscribe((chat: IChatRoom[]) => {
+      debugger;
       chat.forEach( el => this.chatList.push(el));
     });
 
     this.chatService.update$
     .subscribe( (update: IChatUpdate) => {
-      let index: number;
-      for (let i = 0; i < this.chatList.length; i++) {
-        if (this.chatList[i].id === update.roomId) {
-          index = i;
-        }
-      }
-
-      if (update.user.username === localStorage.getItem('username')) {
-        this.chatList.splice(index, 1);
-        this.chatService.leaveRoom(update.roomId);
-      } else if (update.update === Update.AddUser ) {
-        this.chatList[index].members ?
-          this.chatList[index].members.push(update.user) : this.chatList[index].members = [update.user];
-      } else if (update.update === Update.RemoveUser ) {
-        const a = this.chatList[index].members.indexOf(update.user);
-        this.chatList[index].members.splice(a, 1);
-      }
+      this.handleUpdate(update);
     });
   }
 
   ngOnDestroy() {
-    this.subscribtion.unsubscribe();
+    this.chatService.chatList$.unsubscribe();
+    this.chatService.update$.unsubscribe();
+  }
+
+  handleUpdate(update: IChatUpdate) {
+    let index: number;
+    for (let i = 0; i < this.chatList.length; i++) {
+      if (this.chatList[i].id === update.roomId) {
+        index = i;
+      }
+    }
+
+    if (update.user.username === localStorage.getItem('username')) {
+      this.chatList.splice(index, 1);
+      this.changeChatRoom(this.chatList[index - 1]);
+      this.chatService.leaveRoom(update.roomId);
+    } else if (update.update === Update.AddUser ) {
+      this.chatList[index].members ?
+        this.chatList[index].members.push(update.user) : this.chatList[index].members = [update.user];
+    } else if (update.update === Update.RemoveUser ) {
+      const remove = this.chatList[index].members.indexOf(update.user);
+      this.chatList[index].members.splice(remove, 1);
+    } else if (update.update === Update.Title) {
+      this.chatList[index].title = update.title;
+    }
   }
 
   changeChatRoom(chatRoom: IChatRoom) {

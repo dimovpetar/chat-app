@@ -19,7 +19,6 @@ class ChatRoomRouter {
     create(req: Request, res: Response, next: NextFunction) {
         let chatId: any;
         let user1: any;
-        console.log('asdasd');
         User.findOne({_id: req.body.id})
         .then( user => {
             const chat = new ChatRoom({title: 'Enter title'});
@@ -74,10 +73,20 @@ class ChatRoomRouter {
             }, {$push: {'chatRooms': roomId}})
             .then( user => {
                 user1 = user;
+                console.log(user);
                 return ChatRoom.update({_id: roomId}, {$push: {'members':  user._id}});
             })
             .then ( chat => {
-                socket.newRoomTo(user1, chat);
+               return ChatRoom.findOne({_id: roomId})
+                .populate([{ path: 'members', select: 'username' }])
+                .exec();
+            })
+            .then( chat => {
+                socket.newRoomTo(user1, {
+                    id: chat._id,
+                    members: chat.members,
+                    title: chat.title
+                });
                 socket.updateChat({
                     update: Update.AddUser,
                     roomId: roomId,
@@ -92,13 +101,17 @@ class ChatRoomRouter {
                 console.log(err);
                 res.status(201).json({});
             });
+        } else if ( req.body.update === Update.Title) {
+            ChatRoom.update({_id: roomId}, {$set: { title: req.body.title }})
+            .then( _ => {
+                socket.updateChat({
+                    update: Update.Title,
+                    roomId: roomId
+                });
+            });
         }
     }
 
-
-    private add(req: Request, res: Response, next: NextFunction) {
-
-    }
 
     private list(req: Request, res: Response, next: NextFunction) {
         User.findOne({_id: req.body.id}).populate( [

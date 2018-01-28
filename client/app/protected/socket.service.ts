@@ -45,6 +45,7 @@ export class SocketService {
     return new Observable<IChatRoom>(obs => {
       this.socket.on('newRoom', (chat) => {
         console.log('add chat', chat);
+        debugger;
         obs.next(chat);
       });
     });

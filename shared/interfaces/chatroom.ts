@@ -16,7 +16,8 @@ export interface IChatMessage {
 export interface IChatUpdate {
     update: Update;
     roomId: number;
-    user: IUser;
+    user?: IUser;
+    title?: string;
 }
 
 export enum Update {

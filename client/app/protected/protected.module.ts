@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatDialogModule } from '@angular/material';
 
 
 import { HomeComponent } from './home/home.component';
@@ -10,12 +11,15 @@ import { ChatRoomComponent } from './chat-room/chat-room.component';
 import { ChatService } from './chat.service';
 import { UserService } from './user.service';
 import { SocketService } from './socket.service';
+import { InviteUserDialogComponent } from './invite-user-dialog/invite-user-dialog.component';
 
-
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   imports: [
     CommonModule,
+    MatDialogModule,
+    FormsModule
   ],
   exports: [
     HomeComponent
@@ -31,6 +35,10 @@ import { SocketService } from './socket.service';
     ProfileComponent,
     ChatListComponent,
     ChatRoomComponent,
+    InviteUserDialogComponent,
+  ],
+  entryComponents: [
+    InviteUserDialogComponent
   ]
 })
 export class ProtectedModule { }

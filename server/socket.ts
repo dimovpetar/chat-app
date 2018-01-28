@@ -52,7 +52,6 @@ class Socket {
     newRoomTo(user: IUser, room: IChatRoom) {
         const s = sequenceNumberByClient.get(user.username);
         if (s) {
-           s.join(room.id);
            s.emit('newRoom', room);
         }
     }
