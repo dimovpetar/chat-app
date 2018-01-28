@@ -2,7 +2,7 @@ import { Router, Request, Response, NextFunction } from 'express';
 import * as mongoose from 'mongoose';
 
 import authenticate from '../middlewares/authentication';
-import { ChatRoom } from '../models/chatroom';
+import { ChatRoom, IChatRoomModel } from '../models/chatroom';
 import { User } from '../models/user';
 import { IChatUpdate, Update } from '../../shared/interfaces/chatroom';
 import socket from '../socket';
@@ -46,8 +46,12 @@ class ChatRoomRouter {
     private update(req: Request, res: Response, next: NextFunction) {
         const roomId = req.params.chatroomId;
         if (req.body.update === Update.RemoveUser) {
-            ChatRoom.update({_id: roomId}, {$pull: {'members':  req.body.id}})
-            .then( () => {
+            ChatRoom.findOneAndUpdate({_id: roomId}, {$pull: {'members':  req.body.id}}, {new: true})
+            .exec()
+            .then( (chat) => {
+                if (chat.members.length === 0) {
+                    chat.remove();
+                }
                 return User.findOneAndUpdate({_id: req.body.id}, {$pull: {'chatRooms': roomId}});
             })
             .then( (user) => {
@@ -73,7 +77,6 @@ class ChatRoomRouter {
             }, {$push: {'chatRooms': roomId}})
             .then( user => {
                 user1 = user;
-                console.log(user);
                 return ChatRoom.update({_id: roomId}, {$push: {'members':  user._id}});
             })
             .then ( chat => {
@@ -106,7 +109,8 @@ class ChatRoomRouter {
             .then( _ => {
                 socket.updateChat({
                     update: Update.Title,
-                    roomId: roomId
+                    roomId: roomId,
+                    title: req.body.title
                 });
             });
         }
