@@ -1,0 +1,15 @@
+<div class="formWrapper">
+    <input type="text" placeholder="Search here..." required>
+</div>
+
+<ul>
+<li *ngFor="let chat of chatList" (click)="changeChatRoom(chat)" >
+    <img class="chatPicture" *ngIf="!chat.profilePicture" 
+            src="http://voice4thought.org/wp-content/uploads/2016/08/default1.jpg"/>
+    <span>{{chat.title}}</span>
+</li>
+</ul>
+
+<div class="newChat" (click)="createChatRoom()">
+    <button >+</button>
+</div>

@@ -1,0 +1,30 @@
+.mainPanel {
+    width: 80%;
+    height: 100%;
+}
+
+.leftPanel {
+    width: 20%;
+    height: 100%;
+}
+
+.userPanel {
+    display: flex;
+    width: 100%;
+    height: 6%;
+    background-color: rgb(127, 98, 187);
+}
+
+.home {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+} 
+
+.chatList {
+   
+    width: 100%;
+    height: 94%;
+    background-color: azure;
+    
+}
