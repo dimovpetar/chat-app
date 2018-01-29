@@ -1,5 +1,6 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { User } from '../models/user';
+import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 
 class LoginRouter {
@@ -21,7 +22,8 @@ class LoginRouter {
                 res.status(401).send('Invalid email or password');
                 next();
             } else {
-                if (req.body.password === user.password) {
+                // if (req.body.password === user.password) {
+                if (bcrypt.compareSync(req.body.password, user.password)) {
 
                     const payload = {
                         username: user.username,

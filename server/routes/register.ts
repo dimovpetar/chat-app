@@ -1,4 +1,5 @@
 import { Router, Request, Response, NextFunction } from 'express';
+import * as bcrypt from 'bcrypt';
 import { User, IUserModel } from '../models/user';
 
 class RegisterRouter {
@@ -11,15 +12,20 @@ class RegisterRouter {
 
     register(req: Request, res: Response, next: NextFunction) {
 
-        const user = new User(req.body);
+        const user = new User({
+            username: req.body.username,
+            email: req.body.email,
+            password: bcrypt.hashSync(req.body.password, 10)
+        });
+
         User.findOne({ username: user.username }, (err, result: IUserModel) => {
             if (err) {
                 res.status(503).send('Please, try again later');
                 next();
             }
 
+             // success to register
             if (result === null) {
-                // success to register
                 user.save();
                 res.status(201).json({ msg: 'Registration successful'});
                 next();
