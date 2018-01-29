@@ -1,4 +1,4 @@
-<div *ngIf="room" class="chatRoom">
+<div  class="chatRoom">
 
   <div class="title"> 
     <span>{{room.title}}</span> 
@@ -7,15 +7,16 @@
   <div class="chat">
     
     <div class="messageList">
-        <ul>
+        <ul #scrollMe (scroll)="onScroll()">
+          <!-- [scrollTop]="scrollMe.scrollHeight" -->
       
-          <li *ngFor="let msg of messages; let i = index;" [ngClass]="(username===msg.sender)?'right':'left'">
+          <li *ngFor="let msg of messages; let i = index;" [ngClass]="(msg.sender===username)?'right':'left'">
       
             <div *ngIf="i==0 || msg.sender !== messages[i-1].sender" 
                   class="sender" 
                   [ngClass]="(user===msg.sender)?'right':'left'">
               <img class="profilePicture" *ngIf="!msg.sender.profilePicture" 
-              src="http://voice4thought.org/wp-content/uploads/2016/08/default1.jpg">
+                    src="http://voice4thought.org/wp-content/uploads/2016/08/default1.jpg">
               <span> {{msg.sender}} </span>
             </div>
             <span [ngClass]="(username===msg.sender)?'orange':'blue'"> {{msg.message}}</span>
@@ -28,7 +29,7 @@
           <button (click)="sendMessage()">Send</button>
         </div>
 
-    </div> 
+    </div> <!-- .messageList -->
 
     <div class="info" >
      
