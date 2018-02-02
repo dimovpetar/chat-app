@@ -12,7 +12,6 @@ import LoginRouter from './routes/login';
 import ChatRoomRouter from './routes/chatroom';
 import ProfileRouter from './routes/profile';
 
-
 class App {
   public express: express.Application;
 

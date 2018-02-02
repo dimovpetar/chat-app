@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { InviteUserDialogComponent } from '../invite-user-dialog/invite-user-dialog.component';
 import { ChangeTitleDialogComponent } from '../change-title-dialog/change-title-dialog.component';
+import { SocketService } from '../socket.service';
 
 
 @Component({
@@ -16,29 +17,21 @@ import { ChangeTitleDialogComponent } from '../change-title-dialog/change-title-
 export class ChatRoomComponent implements OnInit, OnDestroy, OnChanges, AfterViewChecked {
   @Input() room: IChatRoom;
   @ViewChild('scrollMe') scrollContainer: ElementRef;
-  private disableScroll = false;
-  public username = localStorage.getItem('username');
   public message = '';
-  public messages: IChatMessage[] = [];
-  private subscription: Subscription;
+  public username = localStorage.getItem('username');
+  private disableScroll = false;
   private inviteUserDialogRef: MatDialogRef<InviteUserDialogComponent>;
   private changeTitleDialogRef: MatDialogRef<ChangeTitleDialogComponent>;
+
   constructor(
     private chatService: ChatService,
+    private socketService: SocketService,
     private dialog: MatDialog
   ) {  }
 
-  ngOnInit() {
-    this.subscription = this.chatService.messages$
-    .subscribe(msg => {
-      this.messages.push(msg);
-    });
-  }
+  ngOnInit() {  }
 
   ngOnChanges() {
-    if (this.room) {
-      this.messages = this.chatService.getLastMessages(this.room.id, 10);
-    }
   }
 
   ngAfterViewChecked() {
@@ -46,16 +39,18 @@ export class ChatRoomComponent implements OnInit, OnDestroy, OnChanges, AfterVie
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+
   }
 
   sendMessage() {
     const chatMessage: IChatMessage = {
       roomId: this.room.id,
       sender: localStorage.getItem('username'),
-      message: this.message
+      text: this.message,
+      sentAt: new Date()
     };
-    this.chatService.sendMsg(chatMessage);
+
+    this.socketService.messages().next(chatMessage);
     this.message = '';
   }
 

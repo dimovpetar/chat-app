@@ -26,6 +26,10 @@ export class SocketService {
     this.socket.disconnect();
   }
 
+  setLastSeen(username: string, roomId: number, date: Date) {
+    this.socket.emit('lastSeen', username, roomId, date);
+  }
+
   messages(): Subject<IChatMessage> {
     const observable = new Observable(obs => {
       this.socket.on('message', (message: IChatMessage) => {
@@ -34,24 +38,21 @@ export class SocketService {
     });
     const observer = {
       next: (message: IChatMessage) => {
-        console.log('sending');
         this.socket.emit('message', message);
       }
     };
     return Subject.create(observer, observable);
   }
 
-  newChatRoom(): Observable<IChatRoom> {
+  newRoom(): Observable<IChatRoom> {
     return new Observable<IChatRoom>(obs => {
       this.socket.on('newRoom', (chat) => {
-        console.log('add chat', chat);
-        debugger;
         obs.next(chat);
       });
     });
   }
 
-  updateChatRoom(): Observable<IChatUpdate> {
+  update(): Observable<IChatUpdate> {
     return new Observable<IChatUpdate>(obs => {
       this.socket.on('updateChatRoom', (update: any) => {
         console.log('update chat room', update);

@@ -1,10 +1,11 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import * as mongoose from 'mongoose';
+
+const mongoose = require('mongoose');
 
 import authenticate from '../middlewares/authentication';
 import { ChatRoom, IChatRoomModel } from '../models/chatroom';
 import { User } from '../models/user';
-import { IChatUpdate, Update } from '../../shared/interfaces/chatroom';
+import { IChatUpdate, Update, IChatRoom } from '../../shared/interfaces/chatroom';
 import socket from '../socket';
 import { IUser } from '../../shared/interfaces/user';
 
@@ -23,7 +24,10 @@ class ChatRoomRouter {
         .then( user => {
             const chat = new ChatRoom({title: 'Enter title'});
             chat.members.push(user._id);
-            user.chatRooms.push(chat._id);
+            user.chat.push({
+                lastSeen: Date.now(),
+                room: chat._id
+            });
             chatId = chat._id;
             user1 = user;
             return  Promise.all([user.save(), chat.save()]);
@@ -35,7 +39,9 @@ class ChatRoomRouter {
                socket.newRoomTo(user1, {
                     id: chat._id,
                     members: chat.members,
-                    title: chat.title
+                    title: chat.title,
+                    lastSeen: new Date(),
+                    unseenCount: 0
                 });
             });
             res.status(201).json({});
@@ -45,16 +51,17 @@ class ChatRoomRouter {
 
     private update(req: Request, res: Response, next: NextFunction) {
         const roomId = req.params.chatroomId;
+
         if (req.body.update === Update.RemoveUser) {
             ChatRoom.findOneAndUpdate({_id: roomId}, {$pull: {'members':  req.body.id}}, {new: true})
-            .exec()
+         //   .exec()
             .then( (chat) => {
                 if (chat.members.length === 0) {
                     chat.remove();
                 }
-                return User.findOneAndUpdate({_id: req.body.id}, {$pull: {'chatRooms': roomId}});
+                return User.findOneAndUpdate({_id: req.body.id}, {$pull: {'chat': {room: roomId}}});
             })
-            .then( (user) => {
+            .then( user => {
                socket.updateChat({
                     update: Update.RemoveUser,
                     roomId: roomId,
@@ -66,29 +73,28 @@ class ChatRoomRouter {
                 res.status(201).json({});
             })
             .catch( err => {
-                console.log('err', err);
-                res.status(201).json({});
+                console.log( err);
+                res.status(503).json({});
             });
         } else if ( req.body.update === Update.AddUser) {
+
             let user1: IUser;
             User.findOneAndUpdate({
                 username: req.body.user.username,
-                'chatRooms': { $ne: roomId}
-            }, {$push: {'chatRooms': roomId}})
+                'chat': { $ne: { room: roomId }}
+            }, {$push: {'chat': { room: roomId}}})
             .then( user => {
                 user1 = user;
-                return ChatRoom.update({_id: roomId}, {$push: {'members':  user._id}});
-            })
-            .then ( chat => {
-               return ChatRoom.findOne({_id: roomId})
-                .populate([{ path: 'members', select: 'username' }])
-                .exec();
+                return ChatRoom.findOneAndUpdate({_id: roomId}, {$push: {'members':  user._id}}, {new: true})
+                .populate({ path: 'members', select: 'username' });
             })
             .then( chat => {
                 socket.newRoomTo(user1, {
                     id: chat._id,
                     members: chat.members,
-                    title: chat.title
+                    title: chat.title,
+                    lastSeen: new Date(),
+                    unseenCount: 0
                 });
                 socket.updateChat({
                     update: Update.AddUser,
@@ -102,7 +108,7 @@ class ChatRoomRouter {
             })
             .catch ( err => {
                 console.log(err);
-                res.status(201).json({});
+                res.status(503).json({});
             });
         } else if ( req.body.update === Update.Title) {
             ChatRoom.update({_id: roomId}, {$set: { title: req.body.title }})
@@ -117,70 +123,71 @@ class ChatRoomRouter {
     }
 
 
-    private list(req: Request, res: Response, next: NextFunction) {
-        User.findOne({_id: req.body.id}).populate( [
-            {path: 'chatRooms', populate: { path: 'members', select: 'username' }},
-            {path: 'chatRooms', populate: { path: 'admins',  select: 'username' }}])
+    private list (req: Request, res: Response, next: NextFunction) {
+        User.findOne({_id: req.body.id})
+        .populate({
+            path: 'chat.room',
+            populate: {
+                path: 'members',
+                select: 'username'
+           }
+        })
         .then(user => {
-            const rooms: any[] = [];
-            user.chatRooms.forEach( room => {
-                rooms.push({
-                    id: room._id,
-                    admins: room.admins,
-                    members: room.members,
-                    title: room.title,
-                });
+            const rooms: IChatRoom[] = [];
+            const promises: Promise<any> [] = [];
+
+            user.chat.forEach( el => {
+                promises.push(
+                    ChatRoom.unseenCount(el.lastSeen, el.room._id)
+                    .then( count => {
+                        rooms.push({
+                            id: el.room._id,
+                            members: el.room.members,
+                            title: el.room.title,
+                            lastSeen: el.lastSeen,
+                            unseenCount: count[0].unseenCount
+                        });
+                    })
+                );
             });
-            res.json(rooms);
+            Promise.all(promises).then( _ => {
+                res.json(rooms);
+            });
         })
         .catch( err => console.error(err));
+    }
+
+    private findMessages (req: Request, res: Response, next: NextFunction) {
+        const date = new Date(req.query.date);
+        ChatRoom.aggregate([
+            { '$match': { _id : mongoose.Types.ObjectId(req.params.chatroomId) } },
+            {
+                '$project': {
+                    'items': {
+                        '$filter': {
+                            'input': '$messages',
+                            'as': 'item',
+                            'cond': { '$lte': [ '$$item.sentAt', date ] }
+                        }
+                    }
+                }
+            }
+        ])
+        .then( (raw) => {
+            res.json(raw[0].items);
+        })
+        .catch( err => {
+            console.error(err);
+            res.json([]);
+        });
     }
 
     init(): void {
         this.router.get('/', authenticate, this.list);
         this.router.post('/', authenticate, this.create);
         this.router.put('/:chatroomId', authenticate, this.update);
+        this.router.get('/:chatroomId', authenticate, this.findMessages);
     }
 }
 
 export default new ChatRoomRouter().router;
-
-
-// const invites = req.body.invites;
-        // createChat(req.body.chatTitle, [req.body.id], [])
-        // .then( chatRoom => {
-        //     User.findOneAndUpdate({_id: req.body.id}, { $push : {'chatRooms':  chatRoom._id}})
-        //     .exec()
-        //     .then( user => {
-        //         //     chatRoom.populate ([
-        //         //        { path: 'participants', select: 'username' },
-        //         //         { path: 'admins',       select: 'username' }])
-        //         //     console.log(chatRoom);
-
-        //         ChatRoom.findOne({_id: chatRoom._id})
-        //         .populate( [
-        //             {path: 'participants', select: 'username' },
-        //             { path: 'admins',       select: 'username' }])
-        //         .then( chatr => {
-        //             socket.newRoomTo(user,{
-        //                 id: chatr._id,
-        //                 admins: chatr.admins,
-        //                 participants: chatr.participants,
-        //                 title: chatr.title,
-        //             });
-        //         })
-
-        //     })
-
-
-        //     // User.find({ username: {$in: invites}}).cursor()
-        //     //     .eachAsync( (resUser) => {
-        //     //     chatRoom.participants.push(resUser._id);
-        //     //     resUser.chatRooms.push(chatRoom._id)
-        //     //     socket.newRoomTo(resUser, {id: chatRoom._id, title: chatRoom.title});
-        //     //     resUser.save();
-        //     // }, err => err)
-        //   //  .then( () =>  chatRoom.save() )
-        // })
-        // .then( () => res.sendStatus(200))
-        // .catch( err => console.error(err));

@@ -3,14 +3,17 @@ import { IUser } from './user';
 export interface IChatRoom {
     id: any;
     members: IUser[];
-    messages?: string[];
+    messages?: IChatMessage[];
     title: string;
+    lastSeen: Date;
+    unseenCount: number;
 }
 
 export interface IChatMessage {
-    roomId: string;
-    message: string;
+    roomId: number;
+    text: string;
     sender: string;
+    sentAt: Date;
 }
 
 export interface IChatUpdate {

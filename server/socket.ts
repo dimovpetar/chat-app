@@ -2,8 +2,10 @@ import * as socketIo from 'socket.io';
 import { Server } from 'http';
 import { IChatMessage, IChatUpdate, IChatRoom } from '../shared/interfaces/chatroom';
 import { IUser } from '../shared/interfaces/user';
+import { User } from './models/user';
+import { ChatRoom } from './models/chatroom';
 
-const  sequenceNumberByClient = new Map();
+const Clients = new Map();
 
 class Socket {
     private io: SocketIO.Server;
@@ -21,7 +23,7 @@ class Socket {
         console.log(`User connected`);
 
         socket.on('init', username => {
-            sequenceNumberByClient.set(username, socket);
+            Clients.set(username, socket);
         });
 
         socket.on('subscribe', function(room) {
@@ -33,13 +35,19 @@ class Socket {
         });
 
         socket.on('message', (message: IChatMessage) => {
-            this.io.sockets.in(message.roomId).emit('message', message);
+            this.io.sockets.in(message.roomId.toString()).emit('message', message);
+            ChatRoom.saveMessage(message);
+        });
+
+        socket.on('lastSeen', (username: string, roomId: number, date: Date) => {
+            User.lastSeen(username, roomId, date);
         });
 
         socket.on('disconnect', function() {
-            for (const [username, s] of Array.from(sequenceNumberByClient.entries())) {
+            for (const [username, s] of Array.from(Clients.entries())) {
                 if (s === socket) {
-                    sequenceNumberByClient.delete(username);
+                    Clients.delete(username);
+                    User.lastActiveAt(username, Date.now());
                     console.log('user ', username, ' disconnected');
                     break;
                 }
@@ -50,7 +58,7 @@ class Socket {
     }
 
     newRoomTo(user: IUser, room: IChatRoom) {
-        const s = sequenceNumberByClient.get(user.username);
+        const s = Clients.get(user.username);
         if (s) {
            s.emit('newRoom', room);
         }

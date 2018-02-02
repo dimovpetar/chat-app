@@ -23,8 +23,12 @@ export class HomeComponent implements OnInit {
   }
 
   changeChatRoom(room) {
-    this.selected = 'chatRoom';
-    this.room = room;
+    if (room) {
+      this.selected = 'chatRoom';
+      this.room = room;
+    } else {
+      this.selected = 'settings';
+    }
   }
 
   createNewChatRoom() {

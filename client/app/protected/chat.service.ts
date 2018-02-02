@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { IChatRoom, IChatMessage, IChatHash, IChatUpdate } from '../../../shared/interfaces/chatroom';
 import { SocketService } from './socket.service';
 import { Subject } from 'rxjs/Subject';
@@ -9,31 +9,16 @@ import { Subscription } from 'rxjs/Subscription';
 
 @Injectable()
 export class ChatService {
-  public chat: IChatHash = {};
-  public messages$: Subject<IChatMessage>;
   public chatList$:  Subject<IChatRoom[]> = new Subject<IChatRoom[]>();
   public update$:   Subject<IChatUpdate> = new Subject<IChatUpdate>();
-  public updateSubscr:  Subscription;
-  public newRoomSubscr: Subscription;
+  private subscription:  Subscription;
 
   constructor(private http: HttpClient, private socketService: SocketService) {
 
-    this.messages$ = <Subject<IChatMessage>>socketService.messages()
-    .map((message: IChatMessage) => {
-      this.chat[message.roomId] ?
-          this.chat[message.roomId].push(message) : this.chat[message.roomId] = [message];
-      return message;
-    });
-
-    this.newRoomSubscr = socketService.newChatRoom()
+    this.subscription = socketService.newRoom()
     .subscribe((chat: IChatRoom) => {
-        this.joinChatRooms([chat]);
-        return chat;
-    });
-
-    this.updateSubscr = socketService.updateChatRoom()
-    .subscribe( (update: IChatUpdate) => {
-      this.chatRoomUpdate(update);
+      this.joinChatRooms([chat]);
+      return chat;
     });
   }
 
@@ -42,10 +27,6 @@ export class ChatService {
     .subscribe( data => {
      // console.log(data);
     });
-  }
-
-  sendMsg(message: IChatMessage) {
-    this.messages$.next(message);
   }
 
   loadAll() {
@@ -68,23 +49,9 @@ export class ChatService {
     });
   }
 
-  /* watches for updates and makes them */
-  chatRoomUpdate(update: IChatUpdate) {
-   /* if (this.chat[update.roomId]) {
-      this.chat[update.roomId].length = 0;
-    }*/
-    this.update$.next(update);
-  }
-
-  getLastMessages(chatId: number, count: number) {
-    if (this.chat[chatId]) {
-      return this.chat[chatId];
-    }
-    return [];
-  }
-
-  leaveRoom(id: number) {
-    this.socketService.leaveRoom(id);
+  getMessagesBefore(date: Date, chatId: number) {
+    const params = new HttpParams().set('date', date.toString());
+    return this.http.get(`/api/chatroom/${chatId}`, {params: params});
   }
 
 }

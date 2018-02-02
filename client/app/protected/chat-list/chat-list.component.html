@@ -6,9 +6,9 @@
 <li *ngFor="let chat of chatList" 
     (click)="changeChatRoom(chat)" 
     [class.selected]="chat===selected">
-    <img class="chatPicture" *ngIf="!chat.profilePicture" 
-            src="https://lh3.googleusercontent.com/TC96Trs_RUZ9fMkusLqJPyBZsfFawlR8HsbyRmcanOvv-y5Mnm4rH0fraGmNtk5n4Tw=w300"/>
+    <img class="chatPicture" *ngIf="!chat.profilePicture" src="../../assets/defaultChat.png"/>
     <span>{{chat.title}}</span>
+    <span>{{chat.unseenCount}}</span>
 </li>
 </ul>
 
