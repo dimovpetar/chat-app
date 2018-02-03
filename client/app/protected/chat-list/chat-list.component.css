@@ -35,17 +35,23 @@ li {
     height: 80%;
     border-radius: 12px;
     outline: none;
+    padding: 5%;
     border: 1px solid #dddddd;
 }
 
 .chatPicture {
     border-radius: 50%;
-    width: 20%;
+    width: 16%;
     margin: 2%
 }
 
-.span {
-    width: 70%;
+.chatTitle {
+    width: 60%;
+    display: inline-block
+}
+
+.badge {
+    width: 10%;
 }
 
 .newChat {

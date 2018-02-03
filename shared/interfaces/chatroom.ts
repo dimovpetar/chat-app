@@ -13,6 +13,7 @@ export interface IChatMessage {
     roomId: number;
     text: string;
     sender: string;
+    senderProfilePicture: string;
     sentAt: Date;
 }
 

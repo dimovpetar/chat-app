@@ -10,6 +10,7 @@ export const UserSchema: Schema = new Schema({
             type: Schema.Types.ObjectId, ref: 'ChatRoom'
         }
     }],
+    profilePicture: String,
     lastActive: { type: Date, default: Date.now },
     createdAt: { type: Date, default: Date.now }
 });
@@ -25,3 +26,14 @@ UserSchema.statics.lastSeen = function lastSeen(username: string, roomId: number
        'chat.room': roomId
    }, { $set: { 'chat.$.lastSeen': date }}).exec();
 };
+
+UserSchema.statics.changeProfilePicture = function changeProfilePicture(username: string, newProfilePicture: string) {
+    this.update({username: username}, {$set: {profilePicture: newProfilePicture}}).exec();
+};
+
+UserSchema.pre('save', function(next) {
+    if (!this.profilePicture) {
+      this.profilePicture = 'profileDefault.jpg';
+    }
+    next();
+});

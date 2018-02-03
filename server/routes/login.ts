@@ -36,7 +36,8 @@ class LoginRouter {
 
                     res.status(200).json({
                         authToken: token,
-                        username: user.username
+                        username: user.username,
+                        profilePicture: user.profilePicture
                         // expiresIn:
                     });
                 } else {

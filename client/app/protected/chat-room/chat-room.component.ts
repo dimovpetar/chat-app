@@ -29,6 +29,26 @@ export class ChatRoomComponent implements OnInit, OnDestroy, OnChanges, AfterVie
     private dialog: MatDialog
   ) {  }
 
+  transform(date: Date) {
+    const hm = new Date(date);
+    let hh = '';
+    let mm = '';
+
+    if (hm.getMinutes() < 10) {
+      mm = '0' + hm.getMinutes();
+    } else {
+      mm = hm.getMinutes().toString();
+    }
+
+    if (hm.getHours() < 10) {
+      hh = '0' + hm.getHours();
+    } else {
+      hh = hm.getHours().toString();
+    }
+
+    return hh + ':' + mm;
+  }
+
   ngOnInit() {  }
 
   ngOnChanges() {
@@ -46,6 +66,7 @@ export class ChatRoomComponent implements OnInit, OnDestroy, OnChanges, AfterVie
     const chatMessage: IChatMessage = {
       roomId: this.room.id,
       sender: localStorage.getItem('username'),
+      senderProfilePicture: localStorage.getItem('profilePicture'),
       text: this.message,
       sentAt: new Date()
     };
@@ -78,7 +99,7 @@ export class ChatRoomComponent implements OnInit, OnDestroy, OnChanges, AfterVie
         update: Update.RemoveUser,
         roomId: this.room.id,
         user: {
-          username: localStorage.getItem('username')
+          username: localStorage.getItem('username'),
         }
     });
   }

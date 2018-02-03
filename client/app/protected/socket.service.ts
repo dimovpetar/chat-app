@@ -33,6 +33,7 @@ export class SocketService {
   messages(): Subject<IChatMessage> {
     const observable = new Observable(obs => {
       this.socket.on('message', (message: IChatMessage) => {
+        console.log(message);
         obs.next(message);
       });
     });

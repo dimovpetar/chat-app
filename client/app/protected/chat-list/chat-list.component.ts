@@ -75,7 +75,7 @@ export class ChatListComponent implements OnInit, OnDestroy {
     this.selectedChat.emit(chatRoom);
     if (chatRoom) {
       this.selected = chatRoom;
-      this.selected.unseenCount = 0;
+      this.selected.unseenCount = 5;
       this.socketService.setLastSeen(localStorage.getItem('username'), this.selected.id, new Date());
       this.messagesInit(chatRoom);
     }

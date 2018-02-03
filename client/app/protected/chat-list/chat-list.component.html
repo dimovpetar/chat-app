@@ -7,8 +7,8 @@
     (click)="changeChatRoom(chat)" 
     [class.selected]="chat===selected">
     <img class="chatPicture" *ngIf="!chat.profilePicture" src="../../assets/defaultChat.png"/>
-    <span>{{chat.title}}</span>
-    <span>{{chat.unseenCount}}</span>
+    <span class="chatTitle">{{chat.title}}</span>
+    <span *ngIf="chat.unseenCount" class="badge">{{chat.unseenCount}}</span>
 </li>
 </ul>
 

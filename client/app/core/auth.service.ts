@@ -19,6 +19,7 @@ export class AuthService {
         if (data && data.authToken) {
             localStorage.setItem('username', data.username);
             localStorage.setItem('authToken', data.authToken);
+            localStorage.setItem('profilePicture', data.profilePicture);
         }
         return data;
     });

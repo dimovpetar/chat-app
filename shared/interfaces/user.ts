@@ -3,5 +3,5 @@ export interface IUser {
     password?: string;
     email?: string;
     authToken?: string;
-    profilePicture?: any;
+    profilePicture?: string;
 }

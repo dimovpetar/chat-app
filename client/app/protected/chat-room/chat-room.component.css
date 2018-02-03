@@ -123,6 +123,11 @@ ul::-webkit-scrollbar-thumb
     width: 100%;
     margin: 10px;
     padding: 10px;
+    display: flex;
+}
+
+.sender span {
+    margin: 5px;
 }
 
 .chat span {

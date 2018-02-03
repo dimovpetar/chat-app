@@ -11,12 +11,13 @@
           <li *ngFor="let msg of room.messages; let i = index;" [ngClass]="(msg.sender===username)?'right':'left'">
             <div *ngIf="i==0 || msg.sender !== room.messages[i-1].sender" 
                   class="sender" 
-                  [ngClass]="(user===msg.sender)?'right':'left'">
+                  [ngClass]="(msg.sender===username)?'right':'left'">
               <img class="profilePicture" *ngIf="!msg.sender.profilePicture" 
-                    src="http://voice4thought.org/wp-content/uploads/2016/08/default1.jpg">
+                    src="../../assets/images/profile/{{msg.senderProfilePicture}}">
               <span> {{msg.sender}} </span>
+              <span> {{transform(msg.sentAt)}}</span>
             </div>
-            <span [ngClass]="(username===msg.sender)?'orange':'blue'"> {{msg.text}}</span>
+            <span [ngClass]="(msg.sender===username)?'orange':'blue'"> {{msg.text}}</span>
           </li>   
         </ul>
       

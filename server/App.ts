@@ -10,7 +10,7 @@ import { HomeRouter } from './routes/home';
 import RegisterRouter from './routes/register';
 import LoginRouter from './routes/login';
 import ChatRoomRouter from './routes/chatroom';
-import ProfileRouter from './routes/profile';
+import ImageRouter from './routes/images';
 
 class App {
   public express: express.Application;
@@ -47,8 +47,7 @@ class App {
     this.express.use('/api/register', RegisterRouter);
     this.express.use('/api/login', LoginRouter);
     this.express.use('/api/chatroom', ChatRoomRouter);
-    /*this.express.use('/profile', ProfileRouter);*/
-    /*this.express.use('/user', FriendRequestRouter)*/
+    this.express.use('/api/images', ImageRouter);
   }
 
 }
