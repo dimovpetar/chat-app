@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { MatDialogModule } from '@angular/material';
 
 import { HomeComponent } from './home/home.component';
-import { HeaderComponent } from './header/header.component';
 import { ProfileComponent } from './profile/profile.component';
 import { ChatListComponent } from './chat-list/chat-list.component';
 import { ChatRoomComponent } from './chat-room/chat-room.component';
@@ -16,6 +15,8 @@ import { InviteUserDialogComponent } from './invite-user-dialog/invite-user-dial
 import { FormsModule } from '@angular/forms';
 import { ChangeTitleDialogComponent } from './change-title-dialog/change-title-dialog.component';
 import { SettingsComponent } from './settings/settings.component';
+import { ChangeChatPictureDialogComponent } from './change-chat-picture-dialog/change-chat-picture-dialog.component';
+import { WelcomeComponent } from './welcome/welcome.component';
 
 @NgModule({
   imports: [
@@ -34,17 +35,19 @@ import { SettingsComponent } from './settings/settings.component';
   ],
   declarations: [
     HomeComponent,
-    HeaderComponent,
     ProfileComponent,
     ChatListComponent,
     ChatRoomComponent,
     InviteUserDialogComponent,
     ChangeTitleDialogComponent,
     SettingsComponent,
+    ChangeChatPictureDialogComponent,
+    WelcomeComponent,
   ],
   entryComponents: [
     InviteUserDialogComponent,
-    ChangeTitleDialogComponent
+    ChangeTitleDialogComponent,
+    ChangeChatPictureDialogComponent
   ]
 })
 export class ProtectedModule { }

@@ -11,5 +11,6 @@
     <div [ngSwitch]="selected" class="mainPanel">
         <app-chat-room *ngSwitchCase="'chatRoom'" [room]="room"></app-chat-room>    
         <app-settings *ngSwitchCase="'settings'"></app-settings>
+        <app-welcome *ngSwitchCase="'welcome'"></app-welcome>
     </div>
 </div>

@@ -11,6 +11,7 @@ import { ImageUploadService } from '../image-upload.service';
 })
 export class SettingsComponent implements OnInit {
   imageToUpload: File = null;
+  profilePicture = localStorage.getItem('profilePicture');
 
   constructor(
     private authService: AuthService,
@@ -29,14 +30,12 @@ export class SettingsComponent implements OnInit {
 
   handleFileInput(files: FileList) {
     this.imageToUpload = files.item(0);
-    console.log(this.imageToUpload);
     this.uploadImage();
   }
 
   uploadImage() {
-    this.uploadService.postImage(this.imageToUpload)
+    this.uploadService.postUserImage(this.imageToUpload)
     .subscribe( (data: any) => {
-      console.log(data);
       localStorage.setItem('profilePicture', data.filename);
       }, error => {
         console.log(error);

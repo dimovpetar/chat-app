@@ -6,12 +6,14 @@
 <li *ngFor="let chat of chatList" 
     (click)="changeChatRoom(chat)" 
     [class.selected]="chat===selected">
-    <img class="chatPicture" *ngIf="!chat.profilePicture" src="../../assets/defaultChat.png"/>
+    <img class="chatPicture" src="../../assets/images/chat/{{chat.picture}}"/>
     <span class="chatTitle">{{chat.title}}</span>
     <span *ngIf="chat.unseenCount" class="badge">{{chat.unseenCount}}</span>
 </li>
 </ul>
 
 <div class="newChat" (click)="createChatRoom()">
-    <button ><span>+</span></button>
+    <div class="btn btn-info btn-lg">
+        <span class="glyphicon glyphicon-plus"></span> 
+    </div>
 </div>

@@ -6,6 +6,8 @@ import { MatDialogRef, MatDialog } from '@angular/material';
 import { InviteUserDialogComponent } from '../invite-user-dialog/invite-user-dialog.component';
 import { ChangeTitleDialogComponent } from '../change-title-dialog/change-title-dialog.component';
 import { SocketService } from '../socket.service';
+import { ChangeChatPictureDialogComponent } from '../change-chat-picture-dialog/change-chat-picture-dialog.component';
+import { ImageUploadService } from '../image-upload.service';
 
 
 @Component({
@@ -22,10 +24,12 @@ export class ChatRoomComponent implements OnInit, OnDestroy, OnChanges, AfterVie
   private disableScroll = false;
   private inviteUserDialogRef: MatDialogRef<InviteUserDialogComponent>;
   private changeTitleDialogRef: MatDialogRef<ChangeTitleDialogComponent>;
+  private changePictureDialogRef: MatDialogRef<ChangeChatPictureDialogComponent>;
 
   constructor(
     private chatService: ChatService,
     private socketService: SocketService,
+    private imageService: ImageUploadService,
     private dialog: MatDialog
   ) {  }
 
@@ -129,8 +133,8 @@ export class ChatRoomComponent implements OnInit, OnDestroy, OnChanges, AfterVie
 
   openTitleDialog() {
     this.changeTitleDialogRef = this.dialog.open(ChangeTitleDialogComponent, {
-      height: '40%',
-      width: '40%'
+      height: '50%',
+      width: '50%'
     });
 
     const sub = this.changeTitleDialogRef.componentInstance.changeTitle
@@ -142,10 +146,40 @@ export class ChatRoomComponent implements OnInit, OnDestroy, OnChanges, AfterVie
       });
     });
 
-    this.inviteUserDialogRef.afterClosed()
+    this.changeTitleDialogRef.afterClosed()
     .subscribe( () => {
       sub.unsubscribe();
     });
+  }
+
+  openPictureDialog() {
+    this.changePictureDialogRef = this.dialog.open(ChangeChatPictureDialogComponent, {
+      height: '50%',
+      width: '50%'
+    });
+
+    const sub = this.changePictureDialogRef.componentInstance.changePicture
+    .subscribe( (files: FileList) => {
+      console.log(files);
+      this.imageService.postChatImage(files.item(0), this.room.id)
+      .subscribe( (data: any) => {
+        console.log(data);
+        }, error => {
+          console.log(error);
+      });
+    });
+
+    this.changePictureDialogRef.afterClosed()
+    .subscribe( () => {
+      sub.unsubscribe();
+    });
+  }
+
+  isNewer(time1: string, time2: string) {
+    const date1 = new Date(time1);
+    const date2 = new Date(time2);
+    const minute = 60;
+    return ((date1.getTime() - date2.getTime()) / 1000) > minute;
   }
 
 }

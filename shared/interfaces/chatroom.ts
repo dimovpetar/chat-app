@@ -7,6 +7,7 @@ export interface IChatRoom {
     title: string;
     lastSeen: Date;
     unseenCount: number;
+    picture: string;
 }
 
 export interface IChatMessage {
@@ -22,12 +23,14 @@ export interface IChatUpdate {
     roomId: number;
     user?: IUser;
     title?: string;
+    picture?: string;
 }
 
 export enum Update {
     AddUser,
     RemoveUser,
-    Title
+    Title,
+    Picture
 }
 
 export interface IChatHash {

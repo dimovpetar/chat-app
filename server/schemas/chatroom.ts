@@ -11,6 +11,7 @@ export const ChatRoomSchema = new Schema({
         senderProfilePicture: String,
         sentAt: { type: Date, default: Date.now }
     }],
+    picture: String,
     createdAt: { type: Date, default: Date.now }
 });
 
@@ -44,3 +45,15 @@ ChatRoomSchema.statics.unseenCount = function (lastSeen: Date, chatId: number) {
         }
     ]);
 };
+
+ChatRoomSchema.statics.changePicture = function changePicture(id: number, newPicture: string) {
+    console.log('asd', newPicture);
+    this.update({_id: id}, {$set: {picture: newPicture}}).exec();
+};
+
+ChatRoomSchema.pre('save', function(next) {
+    if (!this.picture) {
+      this.picture = 'chatDefault.jpg';
+    }
+    next();
+});

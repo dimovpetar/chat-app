@@ -62,6 +62,11 @@ li {
     justify-content: center;
 }
 
+.newChat div { 
+    border-radius: 50%;
+    background-color: darkslateblue;
+}
+
 button {
     background-color: rgb(127, 98, 187);
     border: none;

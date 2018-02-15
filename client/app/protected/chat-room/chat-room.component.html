@@ -9,13 +9,13 @@
     <div class="messageList">
         <ul #scrollMe (scroll)="onScroll()"> 
           <li *ngFor="let msg of room.messages; let i = index;" [ngClass]="(msg.sender===username)?'right':'left'">
-            <div *ngIf="i==0 || msg.sender !== room.messages[i-1].sender" 
+            <div *ngIf="i==0 || msg.sender !== room.messages[i-1].sender || isNewer(msg.sentAt, room.messages[i-1].sentAt)" 
                   class="sender" 
                   [ngClass]="(msg.sender===username)?'right':'left'">
-              <img class="profilePicture" *ngIf="!msg.sender.profilePicture" 
-                    src="../../assets/images/profile/{{msg.senderProfilePicture}}">
-              <span> {{msg.sender}} </span>
-              <span> {{transform(msg.sentAt)}}</span>
+                <img class="profilePicture" *ngIf="!msg.sender.profilePicture" 
+                    src="../../assets/images/user/{{msg.senderProfilePicture}}">
+                <span> {{msg.sender}} </span>
+                <span> {{transform(msg.sentAt)}}</span>
             </div>
             <span [ngClass]="(msg.sender===username)?'orange':'blue'"> {{msg.text}}</span>
           </li>   
@@ -29,22 +29,22 @@
     </div> <!-- .messageList -->
 
     <div class="info" >
-     
+      <img src="../../assets/images/chat/{{room.picture}}"/>
       <ul class="roomSettings">
-        <li><span (click)="openTitleDialog()">Change title</span></li>
+        <li><span (click)="openTitleDialog()">Title</span></li>
+        <li><span (click)="openPictureDialog()">Picture</span></li>
         <li><span (click)="openInviteUserDialog()">Invite users</span></li>
         <li><span (click)="leaveRoom()">Leave room</span></li>
       </ul>
 
       <ul class="userList">
         <li *ngFor="let member of room.members">
-          <img class="memberPicture" *ngIf="!member.profilePicture" 
-          src="http://voice4thought.org/wp-content/uploads/2016/08/default1.jpg"/>
+          <img class="memberPicture" src="../../assets/images/user/{{member.profilePicture}}" />
           <span>{{member.username}}</span>
         </li>   
       </ul>
 
-    </div>
+    </div> <!-- .info -->
 
   </div>
 

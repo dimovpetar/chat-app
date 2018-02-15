@@ -28,6 +28,8 @@ UserSchema.statics.lastSeen = function lastSeen(username: string, roomId: number
 };
 
 UserSchema.statics.changeProfilePicture = function changeProfilePicture(username: string, newProfilePicture: string) {
+    console.log('asd', newProfilePicture);
+    console.log(username);
     this.update({username: username}, {$set: {profilePicture: newProfilePicture}}).exec();
 };
 

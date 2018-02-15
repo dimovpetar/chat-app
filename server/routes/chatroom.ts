@@ -1,7 +1,6 @@
 import { Router, Request, Response, NextFunction } from 'express';
-
+import * as fs from 'fs';
 const mongoose = require('mongoose');
-
 import authenticate from '../middlewares/authentication';
 import { ChatRoom, IChatRoomModel } from '../models/chatroom';
 import { User } from '../models/user';
@@ -18,8 +17,6 @@ class ChatRoomRouter {
     }
 
     create(req: Request, res: Response, next: NextFunction) {
-        let chatId: any;
-        let user1: any;
         User.findOne({_id: req.body.id})
         .then( user => {
             const chat = new ChatRoom({title: 'Enter title'});
@@ -28,20 +25,19 @@ class ChatRoomRouter {
                 lastSeen: Date.now(),
                 room: chat._id
             });
-            chatId = chat._id;
-            user1 = user;
             return  Promise.all([user.save(), chat.save()]);
         })
-        .then( _ => {
-            ChatRoom.findOne({_id: chatId}).populate([{ path: 'members', select: 'username' }])
-            .exec()
+        .then((arr) => {
+            ChatRoom.findOne({_id: arr[1]._id})
+            .populate([{ path: 'members', select: 'username profilePicture' }])
             .then( chat => {
-               socket.newRoomTo(user1, {
+               socket.newRoomTo(arr[0], {
                     id: chat._id,
                     members: chat.members,
                     title: chat.title,
                     lastSeen: new Date(),
-                    unseenCount: 0
+                    unseenCount: 0,
+                    picture: chat.picture
                 });
             });
             res.status(201).json({});
@@ -54,10 +50,12 @@ class ChatRoomRouter {
 
         if (req.body.update === Update.RemoveUser) {
             ChatRoom.findOneAndUpdate({_id: roomId}, {$pull: {'members':  req.body.id}}, {new: true})
-         //   .exec()
             .then( (chat) => {
                 if (chat.members.length === 0) {
                     chat.remove();
+                    // fs.unlink(chat.picture, (err) => {
+                    //     console.log(err);
+                    // });
                 }
                 return User.findOneAndUpdate({_id: req.body.id}, {$pull: {'chat': {room: roomId}}});
             })
@@ -86,7 +84,7 @@ class ChatRoomRouter {
             .then( user => {
                 user1 = user;
                 return ChatRoom.findOneAndUpdate({_id: roomId}, {$push: {'members':  user._id}}, {new: true})
-                .populate({ path: 'members', select: 'username' });
+                .populate({ path: 'members', select: 'username profilePicture' });
             })
             .then( chat => {
                 socket.newRoomTo(user1, {
@@ -94,14 +92,16 @@ class ChatRoomRouter {
                     members: chat.members,
                     title: chat.title,
                     lastSeen: new Date(),
-                    unseenCount: 0
+                    unseenCount: 0,
+                    picture: chat.picture
                 });
                 socket.updateChat({
                     update: Update.AddUser,
                     roomId: roomId,
                     user: {
                         username: user1.username,
-                        email: user1.email
+                        email: user1.email,
+                        profilePicture: user1.profilePicture
                     }
                 });
                 res.status(201).json({});
@@ -129,7 +129,7 @@ class ChatRoomRouter {
             path: 'chat.room',
             populate: {
                 path: 'members',
-                select: 'username'
+                select: 'username profilePicture',
            }
         })
         .then(user => {
@@ -145,7 +145,8 @@ class ChatRoomRouter {
                             members: el.room.members,
                             title: el.room.title,
                             lastSeen: el.lastSeen,
-                            unseenCount: count[0].unseenCount
+                            unseenCount: count[0].unseenCount,
+                            picture: el.room.picture
                         });
                     })
                 );

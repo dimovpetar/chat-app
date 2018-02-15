@@ -8,9 +8,13 @@ import { IUser } from '../../../../shared/interfaces/user';
 })
 export class ProfileComponent implements OnInit {
   @Output() settings: EventEmitter<Boolean> = new EventEmitter<Boolean> ();
-  user: IUser;
+  public user: IUser;
   constructor() {
-    this.user = { username: localStorage.getItem('username')};
+    this.user = {
+      username: localStorage.getItem('username'),
+      profilePicture: localStorage.getItem('profilePicture')
+    };
+    console.log(this.user);
   }
 
   ngOnInit() {

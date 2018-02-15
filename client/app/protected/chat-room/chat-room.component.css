@@ -90,9 +90,6 @@ ul::-webkit-scrollbar-thumb
     clear: both;
 }
 
-.left {
-    
-}
 
 .right {
     text-align: right;
@@ -135,47 +132,51 @@ ul::-webkit-scrollbar-thumb
     font-size: 120%;
 }
 
-.roomSettings {
+.info .roomSettings {
     list-style-type: none;
     width: 100%;
     padding: 0;
 }
 
-.roomSettings li {
+.info .roomSettings li {
     border-style : ridge;
     width: 100%;
     padding: 5%;
     font-family: "Avenir Next", "Avenir", sans-serif;
 }
 
-.roomSettings li:hover {
+.info .roomSettings li:hover {
     background: #eee;
     cursor: pointer;
   }
 
-.roomSettings li span {
+.info .roomSettings li span {
     text-align: center;
 }
 
-.userList {
+.info .userList {
     width: 100%;
-    height: 65%;
     padding: 5%;
     list-style-type: none;
 }
 
-.userList li {
+.info .userList li {
     margin: 5%;
     width: 90%;
 }
 
-.userList .memberPicture {
+.info .userList .memberPicture {
     height: 100%;
     width: 30%;
     border-radius: 50%;
 }
 
-.userList .memberPicture .span {
+.info .userList .memberPicture .span {
     width: 60%;
     margin: 5%;
+}
+
+.info img {
+    height: 25%;
+    max-width: 100%;
 }

@@ -1,6 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import * as bcrypt from 'bcrypt';
 import { User, IUserModel } from '../models/user';
+import { IUser } from '../../shared/interfaces/user';
 
 class RegisterRouter {
     public router: Router;
@@ -15,7 +16,7 @@ class RegisterRouter {
         const user = new User({
             username: req.body.username,
             email: req.body.email,
-            password: bcrypt.hashSync(req.body.password, 10)
+            password: bcrypt.hashSync(req.body.password, 10),
         });
 
         User.findOne({ username: user.username }, (err, result: IUserModel) => {

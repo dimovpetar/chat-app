@@ -1,0 +1,15 @@
+<h1 mat-dialog-title>Select picture</h1>
+<mat-dialog-content>
+  <div class="form-group">
+    <label for="file">Choose File</label>
+    <input type="file"
+           id="file"
+           accept="image/jpeg"
+           (change)="change($event.target.files)">
+  </div>
+  
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="cancel()">Cancel</button>
+</mat-dialog-actions>
+

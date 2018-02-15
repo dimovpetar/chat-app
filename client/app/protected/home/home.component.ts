@@ -12,7 +12,7 @@ export class HomeComponent implements OnInit {
   public room: IChatRoom;
 
   constructor() {
-    this.selected = 'settings';
+    this.selected = 'welcome';
   }
 
   ngOnInit() {

@@ -58,6 +58,8 @@ export class ChatListComponent implements OnInit, OnDestroy {
 
     if (update.update === Update.Title) {
       this.chatList[index].title = update.title;
+    } else if (update.update === Update.Picture) {
+      this.chatList[index].picture = update.picture;
     } else if (update.user.username === localStorage.getItem('username')) {
       this.chatList.splice(index, 1);
       this.changeChatRoom(this.chatList[index - 1]);
@@ -72,10 +74,11 @@ export class ChatListComponent implements OnInit, OnDestroy {
   }
 
   changeChatRoom(chatRoom: IChatRoom) {
+    console.log(chatRoom);
     this.selectedChat.emit(chatRoom);
     if (chatRoom) {
       this.selected = chatRoom;
-      this.selected.unseenCount = 5;
+      this.selected.unseenCount = 0;
       this.socketService.setLastSeen(localStorage.getItem('username'), this.selected.id, new Date());
       this.messagesInit(chatRoom);
     }
