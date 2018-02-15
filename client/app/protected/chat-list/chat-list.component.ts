@@ -41,11 +41,9 @@ export class ChatListComponent implements OnInit, OnDestroy {
     });
 
     this.subscriptions.push(s1, s2, s3);
-    console.log('chat list ctr');
   }
 
   ngOnInit() {
-    console.log('chat list init');
   }
 
   ngOnDestroy() {
