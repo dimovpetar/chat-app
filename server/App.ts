@@ -4,6 +4,7 @@ import * as path from 'path';
 import * as logger from 'morgan';
 import * as dotenv from 'dotenv';
 import mongoose = require('mongoose');
+// import * as mongoose from 'mongoose';
 
 
 import { HomeRouter } from './routes/home';

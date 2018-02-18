@@ -43,6 +43,7 @@ class ImageRouter {
                  return res.status(422).send('an Error occured');
             }
             const filename = req.file.filename;
+            console.log(DIR  + filename);
             fs.move(DIR + filename, DIR + 'user' + '/' + filename, {overwrite: true}, function (err1) {
                 if (err1) {
                     return console.error(err1);
@@ -63,6 +64,7 @@ class ImageRouter {
                  return res.status(422).send('an Error occured');
             }
             const filename = req.file.filename;
+             console.log(DIR  + filename);
             fs.move(DIR + filename, DIR + 'chat' + '/' + filename, {overwrite: true}, function (err1) {
                 if (err1) {
                     return console.error(err1);

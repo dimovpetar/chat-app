@@ -35,6 +35,10 @@ class Socket {
         });
 
         socket.on('message', (message: IChatMessage) => {
+
+            if (message.messageType === 'image') {
+                message.text = 'data:image/jpg;base64,' + new Buffer(message.image).toString('base64');
+            }
             this.io.sockets.in(message.roomId.toString()).emit('message', message);
             ChatRoom.saveMessage(message);
         });

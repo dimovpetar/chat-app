@@ -17,11 +17,15 @@
                 <span> {{msg.sender}} </span>
                 <span> {{transform(msg.sentAt)}}</span>
             </div>
-            <span [ngClass]="(msg.sender===username)?'orange':'blue'"> {{msg.text}}</span>
+            <div [ngSwitch]="msg.messageType"> 
+              <img *ngSwitchCase="'image'" [src]="msg.text"/>
+              <span *ngSwitchCase="'text'" [ngClass]="(msg.sender===username)?'orange':'blue'"> {{msg.text}}</span>
+            </div>
           </li>   
         </ul>
       
         <div class="messageInput">
+          <input type="file" (change)="sendFileMessage($event.target.files)"/>
           <input (keyup.enter)="sendMessage()" [(ngModel)]="message" />
           <button (click)="sendMessage()">Send</button>
         </div>

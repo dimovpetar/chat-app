@@ -9,7 +9,8 @@ export const ChatRoomSchema = new Schema({
         text: String,
         sender: String,
         senderProfilePicture: String,
-        sentAt: { type: Date, default: Date.now }
+        sentAt: { type: Date, default: Date.now },
+        messageType: String
     }],
     picture: String,
     createdAt: { type: Date, default: Date.now }
@@ -17,11 +18,13 @@ export const ChatRoomSchema = new Schema({
 
 
 ChatRoomSchema.statics.saveMessage = function (message: IChatMessage) {
+
     const chatMessage = {
         text: message.text,
         sender: message.sender,
         sentAt: message.sentAt,
-        senderProfilePicture: message.senderProfilePicture
+        senderProfilePicture: message.senderProfilePicture,
+        messageType: message.messageType
     };
 
     this.update({_id: message.roomId}, {$push: {messages: chatMessage}}).exec();

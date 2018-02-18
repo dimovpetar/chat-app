@@ -12,10 +12,12 @@ export interface IChatRoom {
 
 export interface IChatMessage {
     roomId: number;
-    text: string;
     sender: string;
     senderProfilePicture: string;
     sentAt: Date;
+    messageType: string;
+    text: string;
+    image?: ArrayBuffer;
 }
 
 export interface IChatUpdate {

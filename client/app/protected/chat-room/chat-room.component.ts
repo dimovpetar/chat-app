@@ -26,32 +26,14 @@ export class ChatRoomComponent implements OnInit, OnDestroy, OnChanges, AfterVie
   private changeTitleDialogRef: MatDialogRef<ChangeTitleDialogComponent>;
   private changePictureDialogRef: MatDialogRef<ChangeChatPictureDialogComponent>;
 
+  public image: HTMLImageElement;
+
   constructor(
     private chatService: ChatService,
     private socketService: SocketService,
     private imageService: ImageUploadService,
     private dialog: MatDialog
   ) {  }
-
-  transform(date: Date) {
-    const hm = new Date(date);
-    let hh = '';
-    let mm = '';
-
-    if (hm.getMinutes() < 10) {
-      mm = '0' + hm.getMinutes();
-    } else {
-      mm = hm.getMinutes().toString();
-    }
-
-    if (hm.getHours() < 10) {
-      hh = '0' + hm.getHours();
-    } else {
-      hh = hm.getHours().toString();
-    }
-
-    return hh + ':' + mm;
-  }
 
   ngOnInit() {  }
 
@@ -63,7 +45,6 @@ export class ChatRoomComponent implements OnInit, OnDestroy, OnChanges, AfterVie
   }
 
   ngOnDestroy() {
-
   }
 
   sendMessage() {
@@ -72,7 +53,8 @@ export class ChatRoomComponent implements OnInit, OnDestroy, OnChanges, AfterVie
       sender: localStorage.getItem('username'),
       senderProfilePicture: localStorage.getItem('profilePicture'),
       text: this.message,
-      sentAt: new Date()
+      sentAt: new Date(),
+      messageType: 'text'
     };
 
     this.socketService.messages().next(chatMessage);
@@ -182,4 +164,44 @@ export class ChatRoomComponent implements OnInit, OnDestroy, OnChanges, AfterVie
     return ((date1.getTime() - date2.getTime()) / 1000) > minute;
   }
 
+  sendFileMessage(files: FileList) {
+    const fileReader = new FileReader();
+    const room = this.room;
+    const socketService = this.socketService;
+
+    fileReader.readAsArrayBuffer(files[0]);
+    fileReader.onload = function () {
+
+      const chatMessage = {
+        roomId: room.id,
+        sender: localStorage.getItem('username'),
+        senderProfilePicture: localStorage.getItem('profilePicture'),
+        sentAt: new Date(),
+        text: '',
+        messageType: 'image',
+        image: fileReader.result
+      };
+      socketService.messages().next(chatMessage);
+    };
+  }
+
+  transform(date: Date) {
+    const hm = new Date(date);
+    let hh = '';
+    let mm = '';
+
+    if (hm.getMinutes() < 10) {
+      mm = '0' + hm.getMinutes();
+    } else {
+      mm = hm.getMinutes().toString();
+    }
+
+    if (hm.getHours() < 10) {
+      hh = '0' + hm.getHours();
+    } else {
+      hh = hm.getHours().toString();
+    }
+
+    return hh + ':' + mm;
+  }
 }
