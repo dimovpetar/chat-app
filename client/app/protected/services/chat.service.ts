@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { IChatRoom, IChatMessage, IChatHash, IChatUpdate } from '../../../shared/interfaces/chatroom';
+import { IChatRoom, IChatMessage, IChatHash, IChatUpdate } from '../../../../shared/interfaces/chatroom';
 import { SocketService } from './socket.service';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';

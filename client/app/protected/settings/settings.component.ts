@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../core/auth.service';
-import { SocketService } from '../socket.service';
-import { ImageUploadService } from '../image-upload.service';
-
+import { SocketService, ImageUploadService } from '../services';
 
 @Component({
   selector: 'app-settings',

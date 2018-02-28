@@ -1,5 +1,5 @@
 import { Component, OnInit, EventEmitter } from '@angular/core';
-import { Update } from '../../../../shared/interfaces/chatroom';
+import { Update } from '../../../../../shared/interfaces/chatroom';
 import { MatDialogRef } from '@angular/material';
 
 

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import * as io from 'socket.io-client';
-import { IChatMessage, IChatRoom, IChatUpdate } from '../../../shared/interfaces/chatroom';
+import { IChatMessage, IChatRoom, IChatUpdate } from '../../../../shared/interfaces/chatroom';
 
 
 @Injectable()

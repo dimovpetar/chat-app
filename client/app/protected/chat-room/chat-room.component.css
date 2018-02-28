@@ -38,28 +38,6 @@
     border-left-style: ridge;
 }
 
-.messageInput {
-    height: 9%;
-    padding: 7px
-}
-
-.messageInput input  { 
-    padding: 10px;
-    width: 85%; 
-    height: 100%;
-    margin-left: 2%;
-    border-radius: 10px;
-    outline: none;
-    border: 1px solid #dddddd;
-} 
-
-.messageInput button {
-    width: 10%;
-    height: 100%;
-    border: none; 
-    border-radius: 12px;
-}
-
 .messageList ul { 
     list-style: none;
     overflow-y: auto;
@@ -132,30 +110,9 @@ ul::-webkit-scrollbar-thumb
     font-size: 120%;
 }
 
-.info .roomSettings {
-    list-style-type: none;
-    width: 100%;
-    padding: 0;
-}
-
-.info .roomSettings li {
-    border-style : ridge;
-    width: 100%;
-    padding: 5%;
-    font-family: "Avenir Next", "Avenir", sans-serif;
-}
-
-.info .roomSettings li:hover {
-    background: #eee;
-    cursor: pointer;
-  }
-
-.info .roomSettings li span {
-    text-align: center;
-}
-
 .info .userList {
     width: 100%;
+    height: 55%;
     padding: 5%;
     list-style-type: none;
 }

@@ -1,10 +1,8 @@
 import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
-import { ChatService } from '../chat.service';
-import { IChatRoom, IChatUpdate, Update, IChatMessage } from '../../../../shared/interfaces/chatroom';
-import { SocketService } from '../socket.service';
 import { Subject } from 'rxjs/Subject';
+import { IChatRoom, IChatUpdate, Update, IChatMessage } from '../../../../shared/interfaces/chatroom';
 import { Subscription } from 'rxjs/Subscription';
-import chatroom from '../../../../server/routes/chatroom';
+import { SocketService, ChatService } from '../services';
 
 
 @Component({
@@ -72,7 +70,7 @@ export class ChatListComponent implements OnInit, OnDestroy {
   }
 
   changeChatRoom(chatRoom: IChatRoom) {
-    console.log(chatRoom);
+
     this.selectedChat.emit(chatRoom);
     if (chatRoom) {
       this.selected = chatRoom;
@@ -109,6 +107,7 @@ export class ChatListComponent implements OnInit, OnDestroy {
   }
 
   messagesInit(chatRoom: IChatRoom) {
+
     if (this.firstClick(chatRoom)) {
       this.chatService.getMessagesBefore(new Date(), chatRoom.id)
       .subscribe( (messages: IChatMessage[]) => {

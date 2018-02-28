@@ -1,12 +1,12 @@
 import * as http from 'http';
-import App from './App';
+import expressApp from './app';
 import ChatSocket from './socket';
 
 
-const server = http.createServer(App);
+const server = http.createServer(expressApp);
 ChatSocket.setServer(server);
 
-server.listen(App.get('port'));
+server.listen(expressApp.get('port'));
 server.on('error', onError);
 server.on('listening', onListening);
 
@@ -21,7 +21,8 @@ function onError(error: NodeJS.ErrnoException): void {
   if (error.syscall !== 'listen') {
     throw error;
   }
-  const bind = (typeof App.get('port') === 'string') ? 'Pipe ' + App.get('port') : 'Port ' + App.get('port');
+  const bind = (typeof expressApp.get('port') === 'string') ?
+                    'Pipe ' + expressApp.get('port') : 'Port ' + expressApp.get('port');
   switch (error.code) {
     case 'EACCES':
       console.error(`${bind} requires elevated privileges`);

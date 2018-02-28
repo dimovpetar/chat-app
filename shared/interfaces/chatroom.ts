@@ -16,7 +16,7 @@ export interface IChatMessage {
     senderProfilePicture: string;
     sentAt: Date;
     messageType: string;
-    text: string;
+    text?: string;
     image?: ArrayBuffer;
 }
 

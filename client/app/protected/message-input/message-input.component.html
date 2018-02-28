@@ -1,0 +1,6 @@
+<input class="message-input" (keyup.enter)="sendTextMessage()" [(ngModel)]="messageBuffer"/>
+<div class="image-input" (click)="image.click()">
+    <input  type="file" (change)="sendFileMessage($event.target.files)" #image/>
+    <i class="far fa-file-image" ></i>
+</div>
+<button (click)="sendTextMessage()">Send</button>

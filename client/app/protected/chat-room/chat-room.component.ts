@@ -1,13 +1,13 @@
 import { Component, OnInit, Input, OnDestroy, OnChanges, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
 import { IChatRoom, IChatMessage, Update } from '../../../../shared/interfaces/chatroom';
-import { ChatService } from '../chat.service';
 import { Subscription } from 'rxjs/Subscription';
 import { MatDialogRef, MatDialog } from '@angular/material';
-import { InviteUserDialogComponent } from '../invite-user-dialog/invite-user-dialog.component';
-import { ChangeTitleDialogComponent } from '../change-title-dialog/change-title-dialog.component';
-import { SocketService } from '../socket.service';
-import { ChangeChatPictureDialogComponent } from '../change-chat-picture-dialog/change-chat-picture-dialog.component';
-import { ImageUploadService } from '../image-upload.service';
+import {
+  InviteUserDialogComponent,
+  ChangeTitleDialogComponent,
+  ChangeChatPictureDialogComponent,
+  LeaveRoomDialogComponent } from '../dialogs';
+import { SocketService, ImageUploadService, ChatService } from '../services';
 
 
 @Component({
@@ -25,6 +25,7 @@ export class ChatRoomComponent implements OnInit, OnDestroy, OnChanges, AfterVie
   private inviteUserDialogRef: MatDialogRef<InviteUserDialogComponent>;
   private changeTitleDialogRef: MatDialogRef<ChangeTitleDialogComponent>;
   private changePictureDialogRef: MatDialogRef<ChangeChatPictureDialogComponent>;
+  private leaveRoomDialogRef: MatDialogRef<LeaveRoomDialogComponent>;
 
   public image: HTMLImageElement;
 
@@ -47,20 +48,6 @@ export class ChatRoomComponent implements OnInit, OnDestroy, OnChanges, AfterVie
   ngOnDestroy() {
   }
 
-  sendMessage() {
-    const chatMessage: IChatMessage = {
-      roomId: this.room.id,
-      sender: localStorage.getItem('username'),
-      senderProfilePicture: localStorage.getItem('profilePicture'),
-      text: this.message,
-      sentAt: new Date(),
-      messageType: 'text'
-    };
-
-    this.socketService.messages().next(chatMessage);
-    this.message = '';
-  }
-
   onScroll() {
     const element = this.scrollContainer.nativeElement;
     const atBottom = element.scrollHeight - element.scrollTop === element.clientHeight;
@@ -69,6 +56,11 @@ export class ChatRoomComponent implements OnInit, OnDestroy, OnChanges, AfterVie
     } else {
       this.disableScroll = true;
     }
+  }
+
+  sendMessage(message: IChatMessage) {
+    message.roomId = this.room.id;
+    this.socketService.messages().next(message);
   }
 
   scrollToBottom() {
@@ -157,32 +149,28 @@ export class ChatRoomComponent implements OnInit, OnDestroy, OnChanges, AfterVie
     });
   }
 
+  openLeaveRoomDialog() {
+    this.leaveRoomDialogRef = this.dialog.open(LeaveRoomDialogComponent, {
+      height: '50%',
+      width: '50%'
+    });
+
+    const sub = this.leaveRoomDialogRef.componentInstance.leave
+    .subscribe( (leave: boolean) => {
+      this.leaveRoom();
+    });
+
+    this.leaveRoomDialogRef.afterClosed()
+    .subscribe( () => {
+      sub.unsubscribe();
+    });
+  }
+
   isNewer(time1: string, time2: string) {
     const date1 = new Date(time1);
     const date2 = new Date(time2);
     const minute = 60;
     return ((date1.getTime() - date2.getTime()) / 1000) > minute;
-  }
-
-  sendFileMessage(files: FileList) {
-    const fileReader = new FileReader();
-    const room = this.room;
-    const socketService = this.socketService;
-
-    fileReader.readAsArrayBuffer(files[0]);
-    fileReader.onload = function () {
-
-      const chatMessage = {
-        roomId: room.id,
-        sender: localStorage.getItem('username'),
-        senderProfilePicture: localStorage.getItem('profilePicture'),
-        sentAt: new Date(),
-        text: '',
-        messageType: 'image',
-        image: fileReader.result
-      };
-      socketService.messages().next(chatMessage);
-    };
   }
 
   transform(date: Date) {

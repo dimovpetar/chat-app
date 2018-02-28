@@ -3,8 +3,7 @@ import * as bodyParser from 'body-parser';
 import * as path from 'path';
 import * as logger from 'morgan';
 import * as dotenv from 'dotenv';
-import mongoose = require('mongoose');
-// import * as mongoose from 'mongoose';
+import * as mongoose from 'mongoose';
 
 
 import { HomeRouter } from './routes/home';
@@ -13,7 +12,7 @@ import LoginRouter from './routes/login';
 import ChatRoomRouter from './routes/chatroom';
 import ImageRouter from './routes/images';
 
-class App {
+class ExpressApp {
   public express: express.Application;
 
   constructor() {
@@ -30,12 +29,18 @@ class App {
     this.express.use(logger('dev'));
     this.express.use(bodyParser.json());
     this.express.use(bodyParser.urlencoded({ extended: false }));
-    this.express.set('superSecret', 'secret');
+    this.express.set('superSecret', process.env.SECRET_TOKEN);
 
+    if (process.env.NODE_ENV === 'dev') {
+      mongoose.connect(process.env.MONGODB_TEST_URI, {
+        autoReconnect: true
+      });
+    } else {
+      mongoose.connect(process.env.MONGODB_URI, {
+        autoReconnect: true
+      });
+    }
 
-    mongoose.connect(process.env.MONGODB_TEST_URI, {
-      autoReconnect: true
-    });
     mongoose.Promise = global.Promise;
     mongoose.connection.on('error', error => { console.error(error); mongoose.disconnect(); });
     mongoose.connection.on('connected', () => console.log('Connected to MongoDB'));
@@ -53,4 +58,4 @@ class App {
 
 }
 
-export default new App().express;
+export default new ExpressApp().express;

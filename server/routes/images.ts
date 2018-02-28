@@ -8,10 +8,9 @@ import { ChatRoom } from '../models/chatroom';
 import socket from '../socket';
 import { Update } from '../../shared/interfaces/chatroom';
 
-const env = process.env.NODE_ENV || 'dev';
 let DIR;
-if (env === 'dev') {
-    DIR = '/home/petar/mean-chat-app/client/assets/images/';
+if (process.env.NODE_ENV === 'dev') {
+    DIR = path.join(__dirname, '../../../client/assets/images/');
 } else {
     DIR = path.join(__dirname, '../../public/assets/images/');
 }

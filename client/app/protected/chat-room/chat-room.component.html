@@ -1,6 +1,6 @@
 <div  class="chatRoom">
 
-  <div class="title"> 
+  <div class="title" (click)="openTitleDialog()"> 
     <span>{{room.title}}</span> 
   </div>
 
@@ -23,29 +23,22 @@
             </div>
           </li>   
         </ul>
-      
-        <div class="messageInput">
-          <input type="file" (change)="sendFileMessage($event.target.files)"/>
-          <input (keyup.enter)="sendMessage()" [(ngModel)]="message" />
-          <button (click)="sendMessage()">Send</button>
-        </div>
+
+        <app-message-input (message)="sendMessage($event)"></app-message-input>
 
     </div> <!-- .messageList -->
 
     <div class="info" >
-      <img src="../../assets/images/chat/{{room.picture}}"/>
-      <ul class="roomSettings">
-        <li><span (click)="openTitleDialog()">Title</span></li>
-        <li><span (click)="openPictureDialog()">Picture</span></li>
-        <li><span (click)="openInviteUserDialog()">Invite users</span></li>
-        <li><span (click)="leaveRoom()">Leave room</span></li>
-      </ul>
-
+      <img src="../../assets/images/chat/{{room.picture}}" (click)="openPictureDialog()"/>
       <ul class="userList">
         <li *ngFor="let member of room.members">
           <img class="memberPicture" src="../../assets/images/user/{{member.profilePicture}}" />
           <span>{{member.username}}</span>
         </li>   
+      </ul>
+      <ul >
+        <li><span (click)="openInviteUserDialog()">Invite users</span></li>
+        <li><span (click)="openLeaveRoomDialog()">Leave room</span></li>
       </ul>
 
     </div> <!-- .info -->
