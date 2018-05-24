@@ -55,7 +55,7 @@ export class SocketService {
 
   update(): Observable<IChatUpdate> {
     return new Observable<IChatUpdate>(obs => {
-      this.socket.on('updateChatRoom', (update: any) => {
+      this.socket.on('updateChatRoom', (update: IChatUpdate) => {
         console.log('update chat room', update);
         obs.next(update);
       });

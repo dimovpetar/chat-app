@@ -31,8 +31,9 @@ export class ChatService {
 
   loadAll() {
     this.http.get<IChatRoom[]>('/api/chatroom')
-    .subscribe(chatsRooms => {
-      this.joinChatRooms(chatsRooms);
+    .subscribe(chatRooms => {
+      console.log(chatRooms);
+      this.joinChatRooms(chatRooms);
     });
   }
 
@@ -49,9 +50,20 @@ export class ChatService {
     });
   }
 
+  updateChatRoomMembership( update: IChatUpdate) {
+    this.http.put(`/api/chatroom/membership/${update.roomId}`, update)
+    .subscribe(u => {
+
+    });
+  }
+
   getMessagesBefore(date: Date, chatId: number) {
     const params = new HttpParams().set('date', date.toString());
     return this.http.get(`/api/chatroom/${chatId}`, {params: params});
+  }
+
+  loadMembers(chatId: number) {
+    return this.http.get(`api/chatroom/members/${chatId}`);
   }
 
 }

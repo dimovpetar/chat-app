@@ -1,7 +1,6 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import { User, IUserModel } from '../models/user';
 import * as jwt from 'jsonwebtoken';
-import app from '../App';
+import app from '../app';
 
 
 export default function authenticate(req: Request, res: Response, next: NextFunction) {

@@ -13,9 +13,9 @@
                   class="sender" 
                   [ngClass]="(msg.sender===username)?'right':'left'">
                 <img class="profilePicture" *ngIf="!msg.sender.profilePicture" 
-                    src="../../assets/images/user/{{msg.senderProfilePicture}}">
+                    src="{{msg.senderProfilePicture}}">
                 <span> {{msg.sender}} </span>
-                <span> {{transform(msg.sentAt)}}</span>
+                <span> {{transform(msg.createdAt)}}</span>
             </div>
             <div [ngSwitch]="msg.messageType"> 
               <img *ngSwitchCase="'image'" [src]="msg.text"/>
@@ -29,10 +29,10 @@
     </div> <!-- .messageList -->
 
     <div class="info" >
-      <img src="../../assets/images/chat/{{room.picture}}" (click)="openPictureDialog()"/>
+      <img src="{{room.picture}}" (click)="openPictureDialog()"/>
       <ul class="userList">
         <li *ngFor="let member of room.members">
-          <img class="memberPicture" src="../../assets/images/user/{{member.profilePicture}}" />
+          <img class="memberPicture" src="{{member.profilePicture}}" />
           <span>{{member.username}}</span>
         </li>   
       </ul>

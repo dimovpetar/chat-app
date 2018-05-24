@@ -3,24 +3,20 @@ import * as path from 'path';
 import * as multer from 'multer';
 import * as fs from 'fs-extra';
 import authenticate from '../middlewares/authentication';
-import { User } from '../models/user';
-import { ChatRoom } from '../models/chatroom';
 import socket from '../socket';
+import { User, ChatRoom } from '../models';
 import { Update } from '../../shared/interfaces/chatroom';
 
-let DIR;
-if (process.env.NODE_ENV === 'dev') {
-    DIR = path.join(__dirname, '../../../client/assets/images/');
-} else {
-    DIR = path.join(__dirname, '../../public/assets/images/');
-}
+
+const DIR = (process.env.NODE_ENV === 'prod')
+        ? path.join(__dirname, '../../public/assets/images/') : path.join(__dirname, '../../../public/assets/images/');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, DIR);
   },
   filename: function (req, file, cb) {
-      cb(null,  file.originalname );
+      cb(null,  file.originalname);
   }
 });
 
@@ -34,23 +30,30 @@ class ImageRouter {
     }
 
     userImage(req: Request, res: Response, next: NextFunction) {
+        console.log(process.env.NODE_ENV);
         const username = req.body.username;
+        const userId = req.body.id;
 
-        uploadImage.single('image')( req, res, function (err) {
+        uploadImage.single('image')( req, res, (err) => {
             if (err) {
                  console.log(err);
                  return res.status(422).send('an Error occured');
             }
-            const filename = req.file.filename;
-            console.log(DIR  + filename);
-            fs.move(DIR + filename, DIR + 'user' + '/' + filename, {overwrite: true}, function (err1) {
-                if (err1) {
-                    return console.error(err1);
-                }
-            });
-            User.changeProfilePicture(username, filename);
-            return res.json({
-                filename: filename
+            const newFilename = username + '.' + /(?:\.([^.]+))?$/.exec(req.file.filename)[1];
+
+            fs.move(DIR + req.file.filename, DIR + 'user' + '/' + newFilename, { overwrite: true })
+            .then( () => {
+                User.update( { profilePicture: `assets/images/user/${newFilename}`}, {
+                    where: { id: userId }
+                });
+
+                res.json({
+                    filename: `assets/images/user/${newFilename}`
+                });
+            })
+            .catch( moveError =>  {
+                console.log(moveError);
+                res.sendStatus(500);
             });
         });
     }
@@ -62,28 +65,34 @@ class ImageRouter {
                  console.log(err);
                  return res.status(422).send('an Error occured');
             }
-            const filename = req.file.filename;
-             console.log(DIR  + filename);
-            fs.move(DIR + filename, DIR + 'chat' + '/' + filename, {overwrite: true}, function (err1) {
-                if (err1) {
-                    return console.error(err1);
-                }
-                ChatRoom.changePicture(roomId, filename);
+
+            const newFilename = roomId + '.' + /(?:\.([^.]+))?$/.exec(req.file.filename)[1];
+            console.log(DIR  + newFilename);
+            fs.move(DIR + req.file.filename, DIR + 'chat' + '/' + newFilename, {overwrite: true})
+            .then( () => {
+                ChatRoom.update( { picture: `assets/images/chat/${newFilename}`}, {
+                    where: { id: roomId }
+                });
+
                 socket.updateChat({
                     update: Update.Picture,
                     roomId: roomId,
-                    picture: filename
+                    picture: newFilename
                 });
-                return res.json({
-                    filename: filename
+                res.json({
+                    filename: newFilename
                 });
+            })
+            .catch( moveError =>  {
+                console.log(moveError);
+                res.sendStatus(500);
             });
         });
     }
 
     init(): void {
-        this.router.post('/user', authenticate, this.userImage);
-        this.router.post('/chat/:chatroomId', authenticate, this.chatImage);
+       this.router.post('/user', authenticate, this.userImage);
+       this.router.post('/chat/:chatroomId', authenticate, this.chatImage);
     }
 }
 

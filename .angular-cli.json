@@ -5,7 +5,7 @@
   },
   "apps": [
     {
-      "root": "client",
+      "root": "public",
       "outDir": "dist/public",
       "assets": [
         "assets",
@@ -42,11 +42,11 @@
   },
   "lint": [
     {
-      "project": "client/tsconfig.app.json",
+      "project": "public/tsconfig.app.json",
       "exclude": "**/node_modules/**"
     },
     {
-      "project": "client/tsconfig.spec.json",
+      "project": "public/tsconfig.spec.json",
       "exclude": "**/node_modules/**"
     },
     {

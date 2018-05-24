@@ -1,7 +1,7 @@
 import * as http from 'http';
 import expressApp from './app';
 import ChatSocket from './socket';
-
+import db from './db';
 
 const server = http.createServer(expressApp);
 ChatSocket.setServer(server);

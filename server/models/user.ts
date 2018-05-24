@@ -1,10 +1,28 @@
-import { Document, Model, model, Schema } from 'mongoose';
-import { UserSchema } from '../schemas/user';
-import { IUser } from '../../shared/interfaces/user';
+import { STRING, INTEGER, UUID, UUIDV4} from 'sequelize';
+import db from '../db';
 
-export interface IUserModel extends IUser, Document {
-    lastActiveAt(): void;
-    changeProfilePicture(): void;
-}
+export const User = db.sequelize.define('user', {
+    id: {
+        type: UUID, primaryKey: true, defaultValue: UUIDV4
+    },
+    username: {
+        type: STRING, allowNull: false, unique: true
+    },
+    email: {
+        type: STRING,
+        allowNull: false,
+        validate: {
+            isEmail: true
+        }
+    },
+    password: {
+        type: STRING, allowNull: false
+    },
+    profilePicture: {
+        type: STRING, defaultValue: 'assets/images/user/profileDefault.jpg'
+    }
+});
 
-export const User: Model<IUserModel> = model<IUserModel>('User', UserSchema);
+User.sync()
+    .then(() => console.log('User table synced'))
+    .catch((err) => console.log(err));

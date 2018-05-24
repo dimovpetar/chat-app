@@ -2,7 +2,7 @@ import { IUser } from './user';
 
 export interface IChatRoom {
     id: any;
-    members: IUser[];
+    members?: IUser[];
     messages?: IChatMessage[];
     title: string;
     lastSeen: Date;
@@ -14,7 +14,7 @@ export interface IChatMessage {
     roomId: number;
     sender: string;
     senderProfilePicture: string;
-    sentAt: Date;
+    createdAt: Date;
     messageType: string;
     text?: string;
     image?: ArrayBuffer;

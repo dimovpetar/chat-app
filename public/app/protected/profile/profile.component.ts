@@ -14,7 +14,6 @@ export class ProfileComponent implements OnInit {
       username: localStorage.getItem('username'),
       profilePicture: localStorage.getItem('profilePicture')
     };
-    console.log(this.user);
   }
 
   ngOnInit() {

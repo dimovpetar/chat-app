@@ -3,8 +3,6 @@ import * as bodyParser from 'body-parser';
 import * as path from 'path';
 import * as logger from 'morgan';
 import * as dotenv from 'dotenv';
-import * as mongoose from 'mongoose';
-
 
 import { HomeRouter } from './routes/home';
 import RegisterRouter from './routes/register';
@@ -24,27 +22,13 @@ class ExpressApp {
   private config(): void {
 
     dotenv.load({path: '.env'});
-    this.express.set('port', (process.env.PORT || 3000));
-    this.express.use('/', express.static(path.join(__dirname, '../public')));
     this.express.use(logger('dev'));
+    this.express.set('port', (process.env.PORT || 3000));
+    this.express.use(express.static(path.join(__dirname, '../public')));
     this.express.use(bodyParser.json());
     this.express.use(bodyParser.urlencoded({ extended: false }));
     this.express.set('superSecret', process.env.SECRET_TOKEN);
 
-    if (process.env.NODE_ENV === 'dev') {
-      mongoose.connect(process.env.MONGODB_TEST_URI, {
-        autoReconnect: true
-      });
-    } else {
-      mongoose.connect(process.env.MONGODB_URI, {
-        autoReconnect: true
-      });
-    }
-
-    mongoose.Promise = global.Promise;
-    mongoose.connection.on('error', error => { console.error(error); mongoose.disconnect(); });
-    mongoose.connection.on('connected', () => console.log('Connected to MongoDB'));
-    mongoose.connection.on('disconnected', () => console.log('Disconnected from MongoDB'));
   }
 
   private routes(): void {

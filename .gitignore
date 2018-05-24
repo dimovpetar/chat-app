@@ -18,7 +18,7 @@
 *.sublime-workspace
 
 #
-/client/assets/images
+/public/assets/images
 
 # IDE - VSCode
 /.vscode

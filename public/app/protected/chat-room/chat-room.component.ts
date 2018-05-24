@@ -73,7 +73,7 @@ export class ChatRoomComponent implements OnInit, OnDestroy, OnChanges, AfterVie
   }
 
   leaveRoom() {
-    this.chatService.updateChatRoom({
+    this.chatService.updateChatRoomMembership({
         update: Update.RemoveUser,
         roomId: this.room.id,
         user: {
@@ -90,7 +90,7 @@ export class ChatRoomComponent implements OnInit, OnDestroy, OnChanges, AfterVie
 
     const sub = this.inviteUserDialogRef.componentInstance.invite
     .subscribe( (username: string) => {
-      this.chatService.updateChatRoom({
+      this.chatService.updateChatRoomMembership({
         update: Update.AddUser,
         user: {
           username: username

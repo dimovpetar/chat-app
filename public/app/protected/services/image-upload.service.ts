@@ -11,8 +11,7 @@ export class ImageUploadService {
 
   postUserImage(image: File) {
     const formData: FormData = new FormData();
-    const fileName = localStorage.getItem('username') + '.' + /(?:\.([^.]+))?$/.exec(image.name)[1];
-    formData.append('image', image, fileName);
+    formData.append('image', image, image.name);
     return this.http.post('/api/images/user', formData).map( data => data);
   }
 

@@ -24,7 +24,7 @@ export class MessageInputComponent implements OnInit {
       sender: localStorage.getItem('username'),
       senderProfilePicture: localStorage.getItem('profilePicture'),
       text: this.messageBuffer,
-      sentAt: new Date(),
+      createdAt: new Date(),
       messageType: 'text'
     };
     this.message.emit(chatMessage);
@@ -42,7 +42,7 @@ export class MessageInputComponent implements OnInit {
         roomId: 0,
         sender: localStorage.getItem('username'),
         senderProfilePicture: localStorage.getItem('profilePicture'),
-        sentAt: new Date(),
+        createdAt: new Date(),
         text: '',
         messageType: 'image',
         image: fileReader.result

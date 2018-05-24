@@ -3,6 +3,7 @@ import { Subject } from 'rxjs/Subject';
 import { IChatRoom, IChatUpdate, Update, IChatMessage } from '../../../../shared/interfaces/chatroom';
 import { Subscription } from 'rxjs/Subscription';
 import { SocketService, ChatService } from '../services';
+import { IUser } from '../../../../shared/interfaces/user';
 
 
 @Component({
@@ -29,8 +30,8 @@ export class ChatListComponent implements OnInit, OnDestroy {
     });
 
     const s2 = this.chatService.chatList$
-    .subscribe((chat: IChatRoom[]) => {
-      chat.forEach( el => this.chatList.push(el));
+    .subscribe((chatRooms: IChatRoom[]) => {
+      chatRooms.forEach( el => this.chatList.push(el));
     });
 
     const s3 = this.socketService.update()
@@ -46,26 +47,32 @@ export class ChatListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscriptions.forEach( s => s.unsubscribe());
-    console.log('chat list destroyted');
   }
 
   handleUpdate(update: IChatUpdate) {
     const index = this.findIndex(update.roomId);
 
-    if (update.update === Update.Title) {
-      this.chatList[index].title = update.title;
-    } else if (update.update === Update.Picture) {
-      this.chatList[index].picture = update.picture;
-    } else if (update.user.username === localStorage.getItem('username')) {
-      this.chatList.splice(index, 1);
-      this.changeChatRoom(this.chatList[index - 1]);
-      this.socketService.leaveRoom(update.roomId);
-    } else if (update.update === Update.AddUser ) {
-      this.chatList[index].members ?
-        this.chatList[index].members.push(update.user) : this.chatList[index].members = [update.user];
-    } else if (update.update === Update.RemoveUser ) {
-      const remove = this.chatList[index].members.indexOf(update.user);
-      this.chatList[index].members.splice(remove, 1);
+    switch (update.update) {
+      case Update.Title:
+        this.chatList[index].title = update.title;
+        break;
+      case Update.Picture:
+        this.chatList[index].picture = update.picture;
+        break;
+      case Update.AddUser:
+        this.chatList[index].members ?
+            this.chatList[index].members.push(update.user) : this.chatList[index].members = [update.user];
+        break;
+      case Update.RemoveUser:
+        if (update.user.username === localStorage.getItem('username')) {
+          this.chatList.splice(index, 1);
+          this.changeChatRoom(this.chatList[index - 1]);
+          this.socketService.leaveRoom(update.roomId);
+        } else {
+        const remove = this.chatList[index].members.indexOf(update.user);
+        this.chatList[index].members.splice(remove, 1);
+        }
+        break;
     }
   }
 
@@ -76,7 +83,9 @@ export class ChatListComponent implements OnInit, OnDestroy {
       this.selected = chatRoom;
       this.selected.unseenCount = 0;
       this.socketService.setLastSeen(localStorage.getItem('username'), this.selected.id, new Date());
-      this.messagesInit(chatRoom);
+      if (this.firstClick(chatRoom)) {
+        this.chatRoomInit(chatRoom);
+      }
     }
   }
 
@@ -106,14 +115,20 @@ export class ChatListComponent implements OnInit, OnDestroy {
     return chatRoom.messages ? false : true;
   }
 
-  messagesInit(chatRoom: IChatRoom) {
+  chatRoomInit(chatRoom: IChatRoom) {
+    this.chatService.loadMembers(chatRoom.id)
+    .subscribe( (members: IUser[]) => {
+      chatRoom.members = members;
+    });
 
-    if (this.firstClick(chatRoom)) {
-      this.chatService.getMessagesBefore(new Date(), chatRoom.id)
-      .subscribe( (messages: IChatMessage[]) => {
-        chatRoom.messages = messages;
-      });
-    }
+    this.messagesInit(chatRoom);
+  }
+
+  messagesInit(chatRoom: IChatRoom) {
+    this.chatService.getMessagesBefore(new Date(), chatRoom.id)
+    .subscribe((messages: IChatMessage[]) => {
+      chatRoom.messages = messages;
+    });
   }
 
 }

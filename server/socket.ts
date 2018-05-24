@@ -2,12 +2,11 @@ import * as socketIo from 'socket.io';
 import { Server } from 'http';
 import { IChatMessage, IChatUpdate, IChatRoom } from '../shared/interfaces/chatroom';
 import { IUser } from '../shared/interfaces/user';
-import { User } from './models/user';
-import { ChatRoom } from './models/chatroom';
+import { ChatMessage } from './models';
 
 const Clients = new Map();
 
-class Socket {
+class ChatSocket {
     private io: SocketIO.Server;
 
     constructor() { }
@@ -40,18 +39,24 @@ class Socket {
                 message.text = 'data:image/jpg;base64,' + new Buffer(message.image).toString('base64');
             }
             this.io.sockets.in(message.roomId.toString()).emit('message', message);
-            ChatRoom.saveMessage(message);
+            ChatMessage.create({
+                text: message.text,
+                sender: message.sender,
+                senderProfilePicture: message.senderProfilePicture,
+                messageType: message.messageType,
+                chatroomId: message.roomId
+            });
         });
 
         socket.on('lastSeen', (username: string, roomId: number, date: Date) => {
-            User.lastSeen(username, roomId, date);
+           // User.lastSeen(username, roomId, date);
         });
 
         socket.on('disconnect', function() {
             for (const [username, s] of Array.from(Clients.entries())) {
                 if (s === socket) {
                     Clients.delete(username);
-                    User.lastActiveAt(username, Date.now());
+                 //   User.lastActiveAt(username, Date.now());
                     console.log('user ', username, ' disconnected');
                     break;
                 }
@@ -61,8 +66,8 @@ class Socket {
        });
     }
 
-    newRoomTo(user: IUser, room: IChatRoom) {
-        const s = Clients.get(user.username);
+    newRoomTo(username: string, room: IChatRoom) {
+        const s = Clients.get(username);
         if (s) {
            s.emit('newRoom', room);
         }
@@ -74,4 +79,4 @@ class Socket {
 
 }
 
-export default new Socket();
+export default new ChatSocket();
