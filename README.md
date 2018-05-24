@@ -2,7 +2,7 @@
 Chat application made with
 * Angular 5
 * Node.js server using Express, written in Typescript
-* MongoDB with Mongoose
+* MySQL with Sequelize
 * Socket.io
 
 **To start the project run:**
