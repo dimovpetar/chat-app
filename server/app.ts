@@ -20,11 +20,19 @@ class ExpressApp {
   }
 
   private config(): void {
-
+    console.log('\nNODE_ENV: ', process.env.NODE_ENV);
     dotenv.load({path: '.env'});
     this.express.use(logger('dev'));
     this.express.set('port', (process.env.PORT || 3000));
-    this.express.use(express.static(path.join(__dirname, '../public')));
+
+    if (process.env.NODE_ENV === 'dev') {
+      this.express.use(express.static(path.join(__dirname, '../../public')));
+      this.express.set('publicDir', path.join(__dirname, '../../public'));
+    } else {
+      this.express.use(express.static(path.join(__dirname, '../public')));
+      this.express.set('publicDir', path.join(__dirname, '../public'));
+    }
+
     this.express.use(bodyParser.json());
     this.express.use(bodyParser.urlencoded({ extended: false }));
     this.express.set('superSecret', process.env.SECRET_TOKEN);

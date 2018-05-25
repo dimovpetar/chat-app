@@ -12,15 +12,13 @@ const DIR = (process.env.NODE_ENV === 'prod')
         ? path.join(__dirname, '../../public/assets/images/') : path.join(__dirname, '../../../public/assets/images/');
 
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, DIR);
-  },
-  filename: function (req, file, cb) {
-      cb(null,  file.originalname);
-  }
+    destination: function (req, file, cb) {
+        cb(null, DIR);
+    }
 });
 
 const uploadImage = multer({ storage: storage });
+
 class ImageRouter {
     public router: Router;
 
@@ -30,7 +28,6 @@ class ImageRouter {
     }
 
     userImage(req: Request, res: Response, next: NextFunction) {
-        console.log(process.env.NODE_ENV);
         const username = req.body.username;
         const userId = req.body.id;
 
@@ -39,53 +36,38 @@ class ImageRouter {
                  console.log(err);
                  return res.status(422).send('an Error occured');
             }
-            const newFilename = username + '.' + /(?:\.([^.]+))?$/.exec(req.file.filename)[1];
 
-            fs.move(DIR + req.file.filename, DIR + 'user' + '/' + newFilename, { overwrite: true })
-            .then( () => {
-                User.update( { profilePicture: `assets/images/user/${newFilename}`}, {
-                    where: { id: userId }
-                });
+            User.update( { profilePicture: `assets/images/${req.file.filename}`}, {
+                where: { id: userId }
+            });
 
-                res.json({
-                    filename: `assets/images/user/${newFilename}`
-                });
-            })
-            .catch( moveError =>  {
-                console.log(moveError);
-                res.sendStatus(500);
+            res.json({
+                filename: `assets/images/${req.file.filename}`
             });
         });
     }
 
     chatImage(req: Request, res: Response, next: NextFunction) {
         const roomId = req.params.chatroomId;
+        console.log('VLIZA\n\n');
+
         uploadImage.single('image')( req, res, function (err) {
             if (err) {
                  console.log(err);
                  return res.status(422).send('an Error occured');
             }
 
-            const newFilename = roomId + '.' + /(?:\.([^.]+))?$/.exec(req.file.filename)[1];
-            console.log(DIR  + newFilename);
-            fs.move(DIR + req.file.filename, DIR + 'chat' + '/' + newFilename, {overwrite: true})
-            .then( () => {
-                ChatRoom.update( { picture: `assets/images/chat/${newFilename}`}, {
-                    where: { id: roomId }
-                });
+            ChatRoom.update( { picture: `assets/images/${req.file.filename}`}, {
+                where: { id: roomId }
+            });
 
-                socket.updateChat({
-                    update: Update.Picture,
-                    roomId: roomId,
-                    picture: newFilename
-                });
-                res.json({
-                    filename: newFilename
-                });
-            })
-            .catch( moveError =>  {
-                console.log(moveError);
-                res.sendStatus(500);
+            socket.updateChat({
+                update: Update.Picture,
+                roomId: roomId,
+                picture: req.file.filename
+            });
+            res.json({
+                filename: req.file.filename
             });
         });
     }

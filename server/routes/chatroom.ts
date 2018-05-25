@@ -50,7 +50,7 @@ class ChatRoomRouter {
     }
 
     private updateMembership(req: Request, res: Response, next: NextFunction) {
-        const roomId = +req.params.chatroomId;
+        const roomId = req.params.chatroomId;
         let chatRef;
 
         User.findOne({ where: { username: req.body.user.username}})

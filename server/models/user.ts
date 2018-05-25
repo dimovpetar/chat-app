@@ -19,7 +19,7 @@ export const User = db.sequelize.define('user', {
         type: STRING, allowNull: false
     },
     profilePicture: {
-        type: STRING, defaultValue: 'assets/images/user/profileDefault.jpg'
+        type: STRING, defaultValue: 'assets/images/user/profileDefault'
     }
 });
 
