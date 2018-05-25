@@ -2,7 +2,6 @@ import { Router, Request, Response, NextFunction } from 'express';
 import * as jwt from 'jsonwebtoken';
 import app from '../app';
 
-
 export default function authenticate(req: Request, res: Response, next: NextFunction) {
     const token = req.headers['authorization'].toString().replace('Bearer ', '');
     if (token) {

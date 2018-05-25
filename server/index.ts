@@ -1,7 +1,16 @@
 import * as http from 'http';
+import * as dotenv from 'dotenv';
+
+(function () {
+  dotenv.load({path: '.env'});
+  console.log('Loading .env variables');
+})();
+
 import expressApp from './app';
 import ChatSocket from './socket';
 import db from './db';
+
+
 
 const server = http.createServer(expressApp);
 ChatSocket.setServer(server);

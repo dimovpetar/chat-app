@@ -6,9 +6,6 @@ import { User, ChatRoom, ChatRoomMembers, ChatMessage } from '../models';
 import { IUser } from '../../shared/interfaces/user';
 import { Update, IChatRoom, IChatMessage } from '../../shared/interfaces/chatroom';
 
-// import * as fs from 'fs';
-
-
 class ChatRoomRouter {
     public router: Router;
 
@@ -70,8 +67,8 @@ class ChatRoomRouter {
                         if (members.length === 0 ) {
                             chatRef.destroy();
                             ChatMessage.destroy( {where : { chatRoomId: roomId }});
-                            // to delete chat picture
                         }
+
                         socket.updateChat({
                             update: Update.RemoveUser,
                             roomId: roomId,
@@ -123,6 +120,10 @@ class ChatRoomRouter {
                 default:
                     res.sendStatus(503);
             }
+        })
+        .catch( err => {
+            console.log(err);
+            res.sendStatus(500);
         });
     }
 

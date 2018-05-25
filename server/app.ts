@@ -2,7 +2,6 @@ import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import * as path from 'path';
 import * as logger from 'morgan';
-import * as dotenv from 'dotenv';
 
 import { HomeRouter } from './routes/home';
 import RegisterRouter from './routes/register';
@@ -20,8 +19,7 @@ class ExpressApp {
   }
 
   private config(): void {
-    console.log('\nNODE_ENV: ', process.env.NODE_ENV);
-    dotenv.load({path: '.env'});
+    console.log('NODE_ENV: ', process.env.NODE_ENV);
     this.express.use(logger('dev'));
     this.express.set('port', (process.env.PORT || 3000));
 

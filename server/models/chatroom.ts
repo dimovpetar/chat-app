@@ -1,6 +1,10 @@
 import { STRING, UUID, DATE, UUIDV4 } from 'sequelize';
 import db from '../db';
 import { User } from './user';
+import * as fs from 'fs-extra';
+import { IChatRoom } from '../../shared/interfaces/chatroom';
+import app from '../app';
+
 
 export const ChatRoom = db.sequelize.define('chatroom', {
     id: {
@@ -11,6 +15,20 @@ export const ChatRoom = db.sequelize.define('chatroom', {
     },
     picture: {
         type: STRING, defaultValue: 'assets/images/chat/chatroomDefault.jpg'
+    }
+}, {
+    hooks: {
+        beforeDestroy: (chatroom: IChatRoom, options) => {
+            if (chatroom.picture !== 'assets/images/chat/chatroomDefault.jpg') {
+                fs.unlink( app.get('publicDir') + '/' + chatroom.picture, (err) => {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        console.log('successfully deleted', chatroom.picture);
+                    }
+                });
+            }
+        }
     }
 });
 
