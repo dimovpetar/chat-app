@@ -24,7 +24,7 @@ export const ChatRoom = db.sequelize.define('chatroom', {
                     if (err) {
                         console.log(err);
                     } else {
-                        console.log('successfully deleted', chatroom.picture);
+                        console.log('\nSuccessfully deleted', chatroom.picture);
                     }
                 });
             }

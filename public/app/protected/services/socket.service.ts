@@ -62,4 +62,12 @@ export class SocketService {
     });
   }
 
+  newProfilePicture(): Observable<any> {
+    return new Observable<any>(obs => {
+      this.socket.on('newProfilePicture', (picture) => {
+        obs.next(picture);
+      });
+    });
+  }
+
 }

@@ -13,9 +13,6 @@ const DIR = (process.env.NODE_ENV === 'prod')
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, DIR);
-  },
-  filename: function (req, file, cb) {
-      cb(null,  file.originalname);
   }
 });
 
@@ -29,7 +26,6 @@ class ImageRouter {
     }
 
     userImage(req: Request, res: Response, next: NextFunction) {
-        console.log(process.env.NODE_ENV);
         const username = req.body.username;
         const userId = req.body.id;
 
@@ -38,17 +34,19 @@ class ImageRouter {
                  console.log(err);
                  return res.status(422).send('an Error occured');
             }
-            const newFilename = username + '.' + /(?:\.([^.]+))?$/.exec(req.file.filename)[1];
 
-            fs.move(DIR + req.file.filename, DIR + 'user' + '/' + newFilename, { overwrite: true })
+            fs.move(DIR + req.file.filename, DIR + 'user' + '/' + req.file.filename, { overwrite: true })
             .then( () => {
-                User.update( { profilePicture: `assets/images/user/${newFilename}`}, {
+                User.update( { profilePicture: `assets/images/user/${req.file.filename}`}, {
                     where: { id: userId }
                 });
 
+                console.log('\n\n', userId);
+
                 res.json({
-                    filename: `assets/images/user/${newFilename}`
+                    filename: `assets/images/user/${req.file.filename}`
                 });
+                socket.newProfilePictureTo(username, `assets/images/user/${req.file.filename}`);
             })
             .catch( moveError =>  {
                 console.log(moveError);
@@ -59,27 +57,27 @@ class ImageRouter {
 
     chatImage(req: Request, res: Response, next: NextFunction) {
         const roomId = req.params.chatroomId;
+
         uploadImage.single('image')( req, res, function (err) {
             if (err) {
                  console.log(err);
                  return res.status(422).send('an Error occured');
             }
 
-            const newFilename = roomId + '.' + /(?:\.([^.]+))?$/.exec(req.file.filename)[1];
-            console.log(DIR  + newFilename);
-            fs.move(DIR + req.file.filename, DIR + 'chat' + '/' + newFilename, {overwrite: true})
+            fs.move(DIR + req.file.filename, DIR + 'chat' + '/' + req.file.filename, { overwrite: true })
             .then( () => {
-                ChatRoom.update( { picture: `assets/images/chat/${newFilename}`}, {
+                ChatRoom.update( { picture: `assets/images/chat/${req.file.filename}`}, {
                     where: { id: roomId }
                 });
 
                 socket.updateChat({
                     update: Update.Picture,
                     roomId: roomId,
-                    picture: newFilename
+                    picture: `assets/images/chat/${req.file.filename}`
                 });
+
                 res.json({
-                    filename: newFilename
+                    filename: `assets/images/chat/${req.file.filename}`
                 });
             })
             .catch( moveError =>  {

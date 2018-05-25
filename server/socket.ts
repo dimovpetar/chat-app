@@ -77,6 +77,13 @@ class ChatSocket {
         this.io.sockets.in(update.roomId.toString()).emit('updateChatRoom', update);
     }
 
+    newProfilePictureTo(username: string, picturePath: string) {
+        const s = Clients.get(username);
+        if (s) {
+           s.emit('newProfilePicture', picturePath);
+        }
+    }
+
 }
 
 export default new ChatSocket();

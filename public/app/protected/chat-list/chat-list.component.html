@@ -6,7 +6,7 @@
 <li *ngFor="let chat of chatList" 
     (click)="changeChatRoom(chat)" 
     [class.selected]="chat===selected">
-    <img class="chatPicture" src="{{chat.picture}}"/>
+    <img class="chatPicture" [src]="chat.picture"/>
     <span class="chatTitle">{{chat.title}}</span>
     <span *ngIf="chat.unseenCount" class="badge">{{chat.unseenCount}}</span>
 </li>

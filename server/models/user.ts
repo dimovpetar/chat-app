@@ -24,20 +24,6 @@ export const User = db.sequelize.define('user', {
     profilePicture: {
         type: STRING, defaultValue: 'assets/images/user/profileDefault.jpg'
     }
-}, {
-    hooks: {
-        beforeDestroy: (user: IUser, options) => {
-            if (user.profilePicture !== 'assets/images/user/profileDefault.jpg') {
-                fs.unlink(app.get('publicDir') + '/' + user.profilePicture, (err) => {
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        console.log('successfully deleted', user.profilePicture);
-                    }
-                });
-            }
-        }
-    }
 });
 
 User.sync()

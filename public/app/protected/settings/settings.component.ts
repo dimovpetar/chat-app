@@ -33,11 +33,11 @@ export class SettingsComponent implements OnInit {
 
   uploadImage() {
     this.uploadService.postUserImage(this.imageToUpload)
-    .subscribe( (data: any) => {
-      localStorage.setItem('profilePicture', data.filename);
+      .subscribe((picture: any) => {
+        this.profilePicture = picture.filename;
       }, error => {
         console.log(error);
-    });
+      });
   }
 
 }

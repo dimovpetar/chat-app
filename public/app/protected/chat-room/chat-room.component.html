@@ -29,10 +29,10 @@
     </div> <!-- .messageList -->
 
     <div class="info" >
-      <img src="{{room.picture}}" (click)="openPictureDialog()"/>
+      <img [src]="room.picture" (click)="openPictureDialog()"/>
       <ul class="userList">
         <li *ngFor="let member of room.members">
-          <img class="memberPicture" src="{{member.profilePicture}}" />
+          <img class="memberPicture" [src]="member.profilePicture" />
           <span>{{member.username}}</span>
         </li>   
       </ul>
