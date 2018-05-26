@@ -27,7 +27,7 @@ export class MessageInputComponent implements OnInit {
       createdAt: new Date(),
       messageType: 'text'
     };
-    console.log(localStorage.getItem('profilePicture'));
+
     this.message.emit(chatMessage);
     this.messageBuffer = '';
   }

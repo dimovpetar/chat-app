@@ -17,7 +17,6 @@ class LoginRouter {
             where: {username: req.body.username}
         })
         .then((user: IUser) => {
-           // console.log('deba', user);
             if (user === null) {
                 res.status(401).send('Invalid username or password');
                 next();

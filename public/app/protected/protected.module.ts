@@ -10,7 +10,7 @@ import { ChatRoomComponent } from './chat-room/chat-room.component';
 import { SettingsComponent } from './settings/settings.component';
 import { WelcomeComponent } from './welcome/welcome.component';
 import { MessageInputComponent } from './message-input/message-input.component';
-import { ChatService, UserService, SocketService, ImageUploadService} from './services';
+import { ChatService, SocketService, ImageUploadService} from './services';
 import {
   InviteUserDialogComponent,
   ChangeTitleDialogComponent,
@@ -28,7 +28,6 @@ import {
   ],
   providers: [
     ChatService,
-    UserService,
     SocketService,
     ImageUploadService
   ],

@@ -41,11 +41,7 @@ class ImageRouter {
                     where: { id: userId }
                 });
 
-                console.log('\n\n', userId);
-
-                res.json({
-                    filename: `assets/images/user/${req.file.filename}`
-                });
+                res.json({ filename: `assets/images/user/${req.file.filename}`});
                 socket.newProfilePictureTo(username, `assets/images/user/${req.file.filename}`);
             })
             .catch( moveError =>  {
@@ -66,9 +62,10 @@ class ImageRouter {
 
             fs.move(DIR + req.file.filename, DIR + 'chat' + '/' + req.file.filename, { overwrite: true })
             .then( () => {
-                ChatRoom.update( { picture: `assets/images/chat/${req.file.filename}`}, {
-                    where: { id: roomId }
-                });
+                ChatRoom.update(
+                    { picture: `assets/images/chat/${req.file.filename}`},
+                    { where: { id: roomId } }
+                );
 
                 socket.updateChat({
                     update: Update.Picture,
@@ -76,9 +73,7 @@ class ImageRouter {
                     picture: `assets/images/chat/${req.file.filename}`
                 });
 
-                res.json({
-                    filename: `assets/images/chat/${req.file.filename}`
-                });
+                res.json({ filename: `assets/images/chat/${req.file.filename}`});
             })
             .catch( moveError =>  {
                 console.log(moveError);

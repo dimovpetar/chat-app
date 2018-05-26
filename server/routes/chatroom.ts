@@ -42,7 +42,7 @@ class ChatRoomRouter {
         })
         .catch(err => {
             console.error(err);
-            res.status(500).json({});
+            res.sendStatus(500);
         });
     }
 
@@ -80,7 +80,7 @@ class ChatRoomRouter {
                         res.status(201).json({});
                     })
                     .catch( err => {
-                        console.log( err);
+                        console.log(err);
                         res.sendStatus(503);
                     });
                     break;

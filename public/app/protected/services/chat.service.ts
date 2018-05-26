@@ -16,25 +16,29 @@ export class ChatService {
   constructor(private http: HttpClient, private socketService: SocketService) {
 
     this.subscription = socketService.newRoom()
-    .subscribe((chat: IChatRoom) => {
-      this.joinChatRooms([chat]);
-      return chat;
-    });
+    .subscribe(
+      (chat: IChatRoom) => {
+        this.joinChatRooms([chat]);
+        return chat;
+      },
+      err => console.log(err)
+    );
   }
 
   createChatRoom() {
     this.http.post('/api/chatroom', {})
-    .subscribe( data => {
-     // console.log(data);
-    });
+    .subscribe(
+      data => {},
+      err => console.log(err)
+    );
   }
 
   loadAll() {
     this.http.get<IChatRoom[]>('/api/chatroom')
-    .subscribe(chatRooms => {
-      console.log(chatRooms);
-      this.joinChatRooms(chatRooms);
-    });
+    .subscribe(
+      chatRooms => this.joinChatRooms(chatRooms),
+      err => console.log(err)
+    );
   }
 
   joinChatRooms(chats: IChatRoom[]) {
@@ -45,16 +49,18 @@ export class ChatService {
   /* put updates */
   updateChatRoom(update: IChatUpdate) {
     this.http.put(`/api/chatroom/${update.roomId}`, update)
-    .subscribe(u => {
-
-    });
+    .subscribe(
+      upd => { },
+      err => console.log(err)
+    );
   }
 
   updateChatRoomMembership( update: IChatUpdate) {
     this.http.put(`/api/chatroom/membership/${update.roomId}`, update)
-    .subscribe(u => {
-
-    });
+    .subscribe(
+      upd => { },
+      err => console.log(err)
+    );
   }
 
   getMessagesBefore(date: Date, chatId: number) {

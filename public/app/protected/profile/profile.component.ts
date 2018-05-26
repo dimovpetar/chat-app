@@ -1,15 +1,16 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { IUser } from '../../../../shared/interfaces/user';
 import { SocketService } from '../services';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, OnDestroy {
   @Output() settings: EventEmitter<Boolean> = new EventEmitter<Boolean> ();
-  private subscription: any;
+  private subscription: Subscription;
   public user: IUser;
 
   constructor( private socketService: SocketService ) {
@@ -26,6 +27,10 @@ export class ProfileComponent implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   showSettings() {

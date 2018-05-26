@@ -17,9 +17,6 @@
 .settings/
 *.sublime-workspace
 
-#
-/public/assets/images
-
 # IDE - VSCode
 /.vscode
 .vscode/*

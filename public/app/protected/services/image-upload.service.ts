@@ -17,9 +17,8 @@ export class ImageUploadService {
 
   postChatImage(image: File, chatId: number) {
     const formData: FormData = new FormData();
-    const fileName = chatId.toString() + '.' + /(?:\.([^.]+))?$/.exec(image.name)[1];
-    console.log(fileName);
-    formData.append('image', image, fileName);
+   // const fileName = chatId.toString() + '.' + /(?:\.([^.]+))?$/.exec(image.name)[1];
+    formData.append('image', image);
     return this.http.post(`/api/images/chat/${chatId}`, formData).map( data => data);
   }
 }

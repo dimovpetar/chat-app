@@ -32,41 +32,31 @@ export class SocketService {
 
   messages(): Subject<IChatMessage> {
     const observable = new Observable(obs => {
-      this.socket.on('message', (message: IChatMessage) => {
-        console.log(message);
-        obs.next(message);
-      });
+      this.socket.on('message', (message: IChatMessage) => obs.next(message));
     });
+
     const observer = {
-      next: (message: IChatMessage) => {
-        this.socket.emit('message', message);
-      }
+      next: (message: IChatMessage) => this.socket.emit('message', message)
     };
+
     return Subject.create(observer, observable);
   }
 
   newRoom(): Observable<IChatRoom> {
     return new Observable<IChatRoom>(obs => {
-      this.socket.on('newRoom', (chat) => {
-        obs.next(chat);
-      });
+      this.socket.on('newRoom', (chat) => obs.next(chat));
     });
   }
 
   update(): Observable<IChatUpdate> {
-    return new Observable<IChatUpdate>(obs => {
-      this.socket.on('updateChatRoom', (update: IChatUpdate) => {
-        console.log('update chat room', update);
-        obs.next(update);
-      });
+    return new Observable<IChatUpdate>( obs => {
+      this.socket.on('updateChatRoom', (update: IChatUpdate) => obs.next(update));
     });
   }
 
   newProfilePicture(): Observable<any> {
     return new Observable<any>(obs => {
-      this.socket.on('newProfilePicture', (picture) => {
-        obs.next(picture);
-      });
+      this.socket.on('newProfilePicture', (picture) => obs.next(picture));
     });
   }
 
